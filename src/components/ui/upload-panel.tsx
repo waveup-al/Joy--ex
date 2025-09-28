@@ -8,6 +8,7 @@ import { X, Upload, GripVertical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useUploadThing } from "@/lib/uploadthing";
+import { toast } from 'sonner'
 import { JoyerLoading } from '@/components/ui/joyer-loading'
 
 export interface UploadedImage {
@@ -35,13 +36,13 @@ export function UploadPanel({
 
   const { startUpload } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
-      console.log("Files: ", res);
+      console.log("Upload completed successfully:", res);
       setIsUploading(false)
       
       // Process uploaded files with Uploadthing URLs
       const newImages: UploadedImage[] = res.map((file, index) => ({
         id: Math.random().toString(36).substr(2, 9),
-        file: new File([], `uploaded-${index}.jpg`), // Create a placeholder File object
+        file: new File([], file.name || `uploaded-${index}.jpg`), // Use actual filename
         url: file.url
       }))
 
@@ -51,8 +52,11 @@ export function UploadPanel({
     onUploadError: (error: Error) => {
       console.error("Upload error:", error);
       setIsUploading(false)
-      // Fallback to blob URLs if upload fails
-      // This will be handled in the onDrop function
+      // Show error message to user
+      toast.error(`Upload failed: ${error.message}`)
+    },
+    onUploadBegin: (name) => {
+      console.log("Upload started for:", name);
     },
   });
 
@@ -64,16 +68,26 @@ export function UploadPanel({
           rejection.errors.map((error) => error.message).join(', ')
         ).join('; ')
         console.warn('Some files were rejected:', errors)
+        toast.error(`Some files were rejected: ${errors}`)
       }
 
+      if (acceptedFiles.length === 0) {
+        return
+      }
+
+      console.log('Starting upload for files:', acceptedFiles.map(f => f.name))
       setIsUploading(true)
-      
-      // Try to upload to Uploadthing first
+
+      // Try to upload to Uploadthing
       try {
         await startUpload(acceptedFiles)
       } catch (error) {
-        console.error('Uploadthing failed, falling back to blob URLs:', error)
+        console.error('Uploadthing upload failed:', error)
         setIsUploading(false)
+        
+        // Show specific error message
+        const errorMessage = error instanceof Error ? error.message : 'Unknown upload error'
+        toast.error(`Upload failed: ${errorMessage}`)
         
         // Fallback to blob URLs if Uploadthing fails
         const newImages: UploadedImage[] = acceptedFiles.map(file => ({
@@ -87,6 +101,9 @@ export function UploadPanel({
     } catch (error) {
       console.error('Error processing uploaded files:', error)
       setIsUploading(false)
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      toast.error(`Error processing files: ${errorMessage}`)
       
       // Final fallback to blob URLs
       const newImages: UploadedImage[] = acceptedFiles.map(file => ({
