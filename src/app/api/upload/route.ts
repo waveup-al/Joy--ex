@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const files: File[] = []
     
     // Collect all files from FormData
-    for (const [key, value] of data.entries()) {
+    for (const [, value] of data.entries()) {
       if (value instanceof File) {
         files.push(value)
       }

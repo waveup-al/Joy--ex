@@ -82,7 +82,7 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
           strength: input.strength,
           guidance: input.guidance
         }
-      } as any
+      }
     }
 
     const savedJob = await saveJobToHistory(jobData)

@@ -39,9 +39,9 @@ export function UploadPanel({
       setIsUploading(false)
       
       // Process uploaded files with Uploadthing URLs
-      const newImages: UploadedImage[] = res.map((file) => ({
+      const newImages: UploadedImage[] = res.map((file, index) => ({
         id: Math.random().toString(36).substr(2, 9),
-        file: file.file,
+        file: new File([], `uploaded-${index}.jpg`), // Create a placeholder File object
         url: file.url
       }))
 
