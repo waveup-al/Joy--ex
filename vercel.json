@@ -4,10 +4,6 @@
       "maxDuration": 60
     }
   },
-  "images": {
-    "unoptimized": true,
-    "loader": "default"
-  },
   "headers": [
     {
       "source": "/(.*)",
