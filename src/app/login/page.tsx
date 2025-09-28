@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 // import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -12,7 +12,7 @@ import { Sparkles, Mail, ArrowLeft } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
@@ -177,8 +177,16 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground">
             Don&apos;t have an account? Sign up is automatic with your first login.
           </p>
-        </div>
+        </Card>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   )
 }
