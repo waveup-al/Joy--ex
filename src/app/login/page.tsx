@@ -177,7 +177,7 @@ function LoginForm() {
           <p className="text-sm text-muted-foreground">
             Don&apos;t have an account? Sign up is automatic with your first login.
           </p>
-        </Card>
+        </div>
       </div>
     </div>
   )
