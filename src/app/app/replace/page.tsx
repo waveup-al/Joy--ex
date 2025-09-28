@@ -173,8 +173,8 @@ export default function CompetitorStyleReplacePage() {
             <div className="text-sm text-purple-800 space-y-1">
               <p>1. <strong>Competitor Images:</strong> Upload 1-3 competitor product images with good backgrounds/lighting</p>
               <p>2. <strong>Your Products:</strong> Upload 1-3 clear product images (preferably with transparent/clean backgrounds)</p>
-              <p>3. <strong>Prompt:</strong> Describe how to position and integrate your product into the competitor's style</p>
-              <p>4. <strong>Generate:</strong> The AI will preserve the competitor's background while replacing with your product</p>
+              <p>3. <strong>Prompt:</strong> Describe how to position and integrate your product into the competitor&apos;s style</p>
+              <p>4. <strong>Generate:</strong> The AI will preserve the competitor&apos;s background while replacing with your product</p>
             </div>
           </div>
         </div>
@@ -195,10 +195,10 @@ export default function CompetitorStyleReplacePage() {
         <Card className="p-6">
           <h3 className="font-medium mb-3 text-purple-900">Example Prompts</h3>
           <ul className="text-sm text-muted-foreground space-y-2">
-            <li>• "Replace the product while keeping the same lighting and shadows"</li>
-            <li>• "Position my product in the center, matching the competitor's angle"</li>
-            <li>• "Preserve the background and table surface, replace only the product"</li>
-            <li>• "Match the scale and perspective of the original product"</li>
+            <li>&bull; &quot;Replace the product while keeping the same lighting and shadows&quot;</li>
+            <li>&bull; &quot;Position my product in the center, matching the competitor&apos;s angle&quot;</li>
+            <li>&bull; &quot;Preserve the background and table surface, replace only the product&quot;</li>
+            <li>&bull; &quot;Match the scale and perspective of the original product&quot;</li>
           </ul>
         </Card>
       </div>

@@ -165,7 +165,7 @@ export default function LoginPage() {
 
         <div className="text-center mt-6">
           <p className="text-sm text-muted-foreground">
-            Don't have an account? Sign up is automatic with your first login.
+            Don&apos;t have an account? Sign up is automatic with your first login.
           </p>
         </div>
       </div>

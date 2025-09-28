@@ -99,7 +99,7 @@ export default function AppDashboard() {
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Upload 2-4 reference images for best results</li>
                 <li>• Be specific in your prompts</li>
-                <li>• Use "preserve" or "keep" for elements you want unchanged</li>
+                <li>&bull; Use &quot;preserve&quot; or &quot;keep&quot; for elements you want unchanged</li>
               </ul>
             </div>
           </div>

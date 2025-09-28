@@ -94,7 +94,7 @@ export function ModeSwitch({ mode, onModeChange, className }: ModeSwitchProps) {
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <p><strong>Competitor Style Replace:</strong> Keep competitor's background/style, replace with your product.</p>
+                  <p><strong>Competitor Style Replace:</strong> Keep competitor&apos;s background/style, replace with your product.</p>
                   <p>Perfect for: Product photography, maintaining brand consistency, competitive analysis.</p>
                 </div>
               )}

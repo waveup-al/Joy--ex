@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
+import { useDropzone, FileRejection } from 'react-dropzone'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X, Upload, GripVertical } from 'lucide-react'
@@ -56,12 +56,12 @@ export function UploadPanel({
     },
   });
 
-  const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: any[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     try {
       // Handle rejected files
       if (rejectedFiles.length > 0) {
         const errors = rejectedFiles.map(rejection => 
-          rejection.errors.map((error: any) => error.message).join(', ')
+          rejection.errors.map((error) => error.message).join(', ')
         ).join('; ')
         console.warn('Some files were rejected:', errors)
       }
