@@ -83,15 +83,6 @@ export function PromptPanel({
     form.setValue('seed', randomSeed)
   }
 
-  const useQuickPrompt = (prompt: string) => {
-    // Check if this is a background prompt title for edit mode
-    if (mode === 'edit' && BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS]) {
-      form.setValue('prompt', BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS])
-    } else {
-      form.setValue('prompt', prompt)
-    }
-  }
-
   const strengthValue = form.watch('strength')
   const guidanceValue = form.watch('guidance')
 
@@ -138,7 +129,14 @@ export function PromptPanel({
                   variant="outline"
                   size="sm"
                   className="justify-start text-left h-auto py-2 px-3"
-                  onClick={() => useQuickPrompt(prompt)}
+                  onClick={() => {
+                    // Check if this is a background prompt title for edit mode
+                    if (mode === 'edit' && BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS]) {
+                      form.setValue('prompt', BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS])
+                    } else {
+                      form.setValue('prompt', prompt)
+                    }
+                  }}
                 >
                   {prompt}
                 </Button>
@@ -152,15 +150,15 @@ export function PromptPanel({
               <Label htmlFor="size">Output Size</Label>
               <Select
                 value={form.watch('size')}
-                onValueChange={(value) => form.setValue('size', value as any)}
+                onValueChange={(value) => form.setValue('size', value as '1024x1024' | '1280x720' | '2048x2048')}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1024x1024">Square (1024×1024)</SelectItem>
-                  <SelectItem value="1280x720">Landscape (1280×720)</SelectItem>
-                  <SelectItem value="2048x2048">Large Square (2048×2048)</SelectItem>
+                  <SelectItem value="1024x1024">Square (1024&times;1024)</SelectItem>
+                  <SelectItem value="1280x720">Landscape (1280&times;720)</SelectItem>
+                  <SelectItem value="2048x2048">Large Square (2048&times;2048)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

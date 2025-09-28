@@ -102,7 +102,7 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
     console.log('FAL AI response received:', {
       images_count: result.images?.length,
       request_id: result.request_id,
-      actual_image_dimensions: result.images?.map((img: any) => ({
+      actual_image_dimensions: result.images?.map((img: { url: string; width: number; height: number }) => ({
         width: img.width,
         height: img.height,
         url_preview: img.url?.substring(0, 50) + '...'

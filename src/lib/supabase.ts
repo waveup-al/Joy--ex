@@ -17,7 +17,7 @@ export interface Job {
   prompt: string
   images: string[]
   output_url?: string
-  meta?: any
+  meta?: Record<string, unknown>
   created_at: string
 }
 

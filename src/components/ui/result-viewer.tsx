@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
 import { Download, RefreshCw, Eye, EyeOff, AlertCircle, ZoomIn, ZoomOut, Maximize2, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -383,7 +382,7 @@ export function ResultViewer({
 
             {/* Image Info */}
             <div className="text-center text-sm text-muted-foreground">
-              {selectedImage.width} × {selectedImage.height} pixels
+              {selectedImage.width} &times; {selectedImage.height} pixels
               {result.jobId && (
                 <span className="block mt-1">
                   Job ID: {result.jobId.slice(0, 8)}...
