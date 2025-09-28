@@ -181,6 +181,9 @@ export function ResultViewer({
                       alt="Generated result"
                       fill
                       className="object-cover"
+                      quality={100}
+                      priority={true}
+                      unoptimized={selectedImage.url.includes('fal.media')}
                     />
                   </div>
                 </div>
@@ -227,6 +230,9 @@ export function ResultViewer({
                         isMagnifying ? "cursor-none" : "cursor-zoom-in"
                       )}
                       onClick={() => !isMagnifying && setIsFullscreen(true)}
+                      quality={100}
+                      priority={true}
+                      unoptimized={selectedImage.url.includes('fal.media')}
                     />
                     
                     {/* Magnifying Glass Overlay */}
@@ -308,6 +314,9 @@ export function ResultViewer({
                           width={selectedImage.width}
                           height={selectedImage.height}
                           className="object-contain"
+                          quality={100}
+                          priority={true}
+                          unoptimized={selectedImage.url.includes('fal.media')}
                         />
                       </div>
                       

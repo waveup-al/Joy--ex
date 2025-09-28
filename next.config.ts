@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Tắt tối ưu hóa cho ảnh từ FAL AI để giữ nguyên chất lượng gốc
+    unoptimized: false,
+    // Cấu hình domains được phép
     remotePatterns: [
       {
         protocol: 'https',
@@ -46,6 +49,11 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
+    // Cấu hình loader tùy chỉnh cho FAL images
+    loader: 'default',
+    // Tăng kích thước tối đa cho phép
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 1024, 2048],
   },
 };
 
