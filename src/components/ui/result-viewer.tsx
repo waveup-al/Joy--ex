@@ -38,7 +38,6 @@ export function ResultViewer({
 }: ResultViewerProps) {
   const [showComparison, setShowComparison] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [showBefore, setShowBefore] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isMagnifying, setIsMagnifying] = useState(false)

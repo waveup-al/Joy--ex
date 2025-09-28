@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { ArrowRight, Edit3, Replace, Sparkles, Zap, Shield, Play, CheckCircle, Palette } from 'lucide-react'
+import { ArrowRight, Edit3, /* Replace, */ Sparkles, Zap, Shield, Play, CheckCircle, Palette } from 'lucide-react'
 
 export default function HomePage() {
   return (

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -27,23 +28,23 @@ export default function HistoryPage() {
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
   const { user } = useUser()
 
-  useEffect(() => {
-    loadJobs()
-  }, [user])
-
-  const loadJobs = async () => {
+  const loadJobs = useCallback(async () => {
     if (!user) return
     
     setIsLoading(true)
     try {
       const userJobs = await getUserJobs(user?.id || '')
       setJobs(userJobs)
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to load job history')
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [user])
+
+  useEffect(() => {
+    loadJobs()
+  }, [loadJobs])
 
   const handleDelete = async (jobId: string) => {
     if (!user) return
@@ -53,7 +54,7 @@ export default function HistoryPage() {
       await deleteJob(jobId, user?.id || '')
       setJobs(prev => prev.filter(job => job.id !== jobId))
       toast.success('Job deleted successfully')
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to delete job')
     } finally {
       setDeletingIds(prev => {
@@ -77,7 +78,7 @@ export default function HistoryPage() {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
       toast.success('Download started')
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to download image')
     }
   }
@@ -251,9 +252,11 @@ export default function HistoryPage() {
                     <div className="grid grid-cols-2 gap-2">
                       {job.images.slice(0, 4).map((imageUrl, index) => (
                         <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                          <img
+                          <Image
                             src={imageUrl}
                             alt={`Input ${index + 1}`}
+                            width={200}
+                            height={200}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -273,9 +276,11 @@ export default function HistoryPage() {
                     <p className="text-sm font-medium text-muted-foreground mb-2">Result</p>
                     <div className="aspect-square bg-muted rounded-lg overflow-hidden">
                       {job.output_url ? (
-                        <img
+                        <Image
                           src={job.output_url}
                           alt="Generated result"
+                          width={200}
+                          height={200}
                           className="w-full h-full object-cover"
                         />
                       ) : (

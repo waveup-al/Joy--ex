@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,7 +14,7 @@ import { toast } from 'sonner'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  // const router = useRouter()
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()

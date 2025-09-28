@@ -106,7 +106,7 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
   }
 }
 
-export async function saveHistoryMeta(jobId: string, userId: string, meta: Record<string, unknown>) {
+export async function saveHistoryMeta(_jobId: string, _userId: string, _meta: Record<string, unknown>) {
   try {
     // This would update job metadata if needed
     // Implementation depends on specific requirements

@@ -35,7 +35,7 @@ export function JoyerLoading({ className, message = "Generating your image..." }
       clearInterval(messageInterval)
       clearInterval(dotsInterval)
     }
-  }, [])
+  }, [messages.length])
 
   return (
     <div className={cn("relative flex flex-col items-center justify-center p-12 space-y-8 min-h-[400px] overflow-hidden", className)}>
