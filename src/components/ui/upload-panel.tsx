@@ -4,12 +4,14 @@ import { useState, useCallback } from 'react'
 import { useDropzone, FileRejection } from 'react-dropzone'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { X, Upload, GripVertical } from 'lucide-react'
+import { X, Upload, GripVertical, Zap, CheckCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from 'sonner'
 import { JoyerLoading } from '@/components/ui/joyer-loading'
+import { optimizeImageForAI, analyzeImageQuality, OptimizedImageResult } from '@/lib/image-optimizer'
+import { qualityMonitor, calculateQualityScore } from '@/lib/quality-monitor'
 
 export interface UploadedImage {
   id: string
@@ -33,6 +35,11 @@ export function UploadPanel({
 }: UploadPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [optimizationStats, setOptimizationStats] = useState<{
+    totalSaved: number;
+    filesOptimized: number;
+  } | null>(null)
 
   const { startUpload } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
@@ -75,44 +82,122 @@ export function UploadPanel({
         return
       }
 
-      console.log('Starting upload for files:', acceptedFiles.map(f => f.name))
+      console.log('Starting optimization and upload for files:', acceptedFiles.map(f => f.name))
+      setIsOptimizing(true)
+      setOptimizationStats(null)
+
+      // Step 1: Analyze and optimize images for better AI processing
+      const optimizedResults: OptimizedImageResult[] = []
+      let totalOriginalSize = 0
+      let totalOptimizedSize = 0
+
+      for (const file of acceptedFiles) {
+        try {
+          // Analyze image quality first
+          const analysis = await analyzeImageQuality(file)
+          
+          if (!analysis.isOptimal) {
+            console.log(`Image quality analysis for ${file.name}:`, analysis)
+            toast.info(`Optimizing ${file.name} for better AI processing...`)
+          }
+
+          // Optimize image for AI processing
+          const optimized = await optimizeImageForAI(file, {
+            maxWidth: 2048,
+            maxHeight: 2048,
+            quality: 0.92, // High quality for AI
+            format: 'jpeg',
+            enhanceContrast: true,
+            sharpen: true
+          })
+
+          optimizedResults.push(optimized)
+          totalOriginalSize += optimized.originalSize
+          totalOptimizedSize += optimized.optimizedSize
+
+          console.log(`Optimized ${file.name}:`, {
+            originalSize: `${(optimized.originalSize / 1024 / 1024).toFixed(2)}MB`,
+            optimizedSize: `${(optimized.optimizedSize / 1024 / 1024).toFixed(2)}MB`,
+            compressionRatio: `${optimized.compressionRatio}%`,
+            dimensions: optimized.dimensions
+          })
+        } catch (error) {
+          console.error(`Failed to optimize ${file.name}:`, error)
+          // Fallback to original file if optimization fails
+          optimizedResults.push({
+            file,
+            originalSize: file.size,
+            optimizedSize: file.size,
+            compressionRatio: 0,
+            dimensions: { width: 0, height: 0 }
+          })
+        }
+      }
+
+      // Update optimization stats
+      const totalSaved = totalOriginalSize - totalOptimizedSize
+      setOptimizationStats({
+        totalSaved,
+        filesOptimized: optimizedResults.length
+      })
+
+      if (totalSaved > 0) {
+        toast.success(`Images optimized! Saved ${(totalSaved / 1024 / 1024).toFixed(2)}MB for better AI processing`)
+      }
+
+      setIsOptimizing(false)
       setIsUploading(true)
 
-      // Try to upload to Uploadthing
+      // Step 2: Upload optimized images
       try {
-        await startUpload(acceptedFiles)
+        const filesToUpload = optimizedResults.map(result => {
+          const startTime = Date.now()
+          
+          // Record quality metrics for monitoring
+          const qualityScore = calculateQualityScore(
+            result.originalSize,
+            result.optimizedSize,
+            Date.now() - startTime,
+            true
+          )
+
+          qualityMonitor.recordMetrics({
+            processingTime: Date.now() - startTime,
+            inputImageSize: result.originalSize,
+            outputImageSize: result.optimizedSize,
+            compressionRatio: result.optimizedSize / result.originalSize,
+            qualityScore,
+            aiProcessingSuccess: true,
+            errorRate: 0
+          })
+
+          return result.file
+        })
+        await startUpload(filesToUpload)
       } catch (error) {
         console.error('Uploadthing upload failed:', error)
         setIsUploading(false)
         
         // Show specific error message
         const errorMessage = error instanceof Error ? error.message : 'Unknown upload error'
-        toast.error(`Upload failed: ${errorMessage}`)
+        toast.error(`Upload failed: ${errorMessage}. Please ensure UploadThing is properly configured for FAL API to work.`)
         
-        // Fallback to blob URLs if Uploadthing fails
-        const newImages: UploadedImage[] = acceptedFiles.map(file => ({
-          id: Math.random().toString(36).substr(2, 9),
-          file,
-          url: URL.createObjectURL(file)
-        }))
-        const updatedImages = [...images, ...newImages].slice(0, maxImages)
-        onImagesChange(updatedImages)
+        // DO NOT fallback to blob URLs as they won't work with FAL API
+        // FAL API requires publicly accessible URLs
+        console.warn('Cannot use blob URLs with FAL API - upload to UploadThing is required')
+        return
       }
     } catch (error) {
       console.error('Error processing uploaded files:', error)
+      setIsOptimizing(false)
       setIsUploading(false)
       
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      toast.error(`Error processing files: ${errorMessage}`)
+      toast.error(`Error processing files: ${errorMessage}. Please ensure UploadThing is properly configured for FAL API to work.`)
       
-      // Final fallback to blob URLs
-      const newImages: UploadedImage[] = acceptedFiles.map(file => ({
-        id: Math.random().toString(36).substr(2, 9),
-        file,
-        url: URL.createObjectURL(file)
-      }))
-      const updatedImages = [...images, ...newImages].slice(0, maxImages)
-      onImagesChange(updatedImages)
+      // DO NOT fallback to blob URLs as they won't work with FAL API
+      // FAL API requires publicly accessible URLs
+      console.warn('Cannot use blob URLs with FAL API - upload to UploadThing is required')
     }
   }, [images, onImagesChange, maxImages, startUpload])
 
@@ -122,7 +207,7 @@ export function UploadPanel({
       'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.gif']
     },
     maxFiles: maxImages - images.length,
-    disabled: images.length >= maxImages || isUploading,
+    disabled: images.length >= maxImages || isUploading || isOptimizing,
     maxSize: 10 * 1024 * 1024, // 10MB limit
     onError: (error) => {
       console.error('Dropzone error:', error)
@@ -158,10 +243,35 @@ export function UploadPanel({
   return (
     <div className={cn("space-y-4", className)}>
       {/* Joyer Loading Overlay */}
-      {isUploading && (
+      {(isUploading || isOptimizing) && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <JoyerLoading message="Uploading your images..." />
+          <JoyerLoading 
+            message={
+              isOptimizing 
+                ? "Optimizing images for better AI processing..." 
+                : "Uploading your optimized images..."
+            } 
+          />
         </div>
+      )}
+
+      {/* Optimization Stats */}
+      {optimizationStats && (
+        <Card className="p-4 bg-green-50 border-green-200">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <Zap className="h-4 w-4 text-green-600" />
+            </div>
+            <div>
+              <h4 className="font-medium text-green-900">Images Optimized for AI Processing</h4>
+              <p className="text-sm text-green-700">
+                {optimizationStats.filesOptimized} files processed • 
+                Saved {(optimizationStats.totalSaved / 1024 / 1024).toFixed(2)}MB • 
+                Enhanced for better AI results
+              </p>
+            </div>
+          </div>
+        </Card>
       )}
       
       {/* Upload Area */}
@@ -171,19 +281,24 @@ export function UploadPanel({
           className={cn(
             "border-2 border-dashed p-8 text-center cursor-pointer transition-colors bg-gradient-to-br from-pink-50/50 to-purple-50/50",
             isDragActive ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50",
-            isUploading && "pointer-events-none opacity-50"
+            (isUploading || isOptimizing) && "pointer-events-none opacity-50"
           )}
         >
           <input {...getInputProps()} />
           <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-lg font-medium mb-2">
-            {isDragActive ? "Drop images here" : isUploading ? "Uploading..." : "Drag & drop images"}
+            {isDragActive ? "Drop images here" : 
+             isOptimizing ? "Optimizing images..." :
+             isUploading ? "Uploading..." : 
+             "Drag & drop images"}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
-            or click to select files
+            {isOptimizing ? "AI-powered optimization in progress" :
+             isUploading ? "Upload in progress" :
+             "or click to select files • Auto-optimized for AI processing"}
           </p>
-          <Button variant="outline" type="button" disabled={isUploading}>
-            {isUploading ? "Uploading..." : "Choose Files"}
+          <Button variant="outline" type="button" disabled={isUploading || isOptimizing}>
+            {isOptimizing ? "Optimizing..." : isUploading ? "Uploading..." : "Choose Files"}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
             {images.length}/{maxImages} images uploaded

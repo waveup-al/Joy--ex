@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { UploadPanel } from '@/components/ui/upload-panel'
 import { PromptPanel } from '@/components/ui/prompt-panel'
 import { ResultViewer } from '@/components/ui/result-viewer'
+import { QualityDashboard } from '@/components/ui/quality-dashboard'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Edit3, ArrowLeft } from 'lucide-react'
@@ -144,6 +145,9 @@ export default function MultiImageEditPage() {
           </div>
         </div>
       </Card>
+
+      {/* Quality Analytics Dashboard */}
+      <QualityDashboard />
     </div>
   )
 }
