@@ -73,11 +73,11 @@ export function PromptPanel({
     defaultValues: {
       prompt: '',
       size: '1024x1024' as const,
-      strength: 0.4, // Lower strength to preserve original image details
-      guidance: 9.5, // Optimized default
-      guidance_scale: 9.5,
-      num_inference_steps: 75, // Higher steps for better quality
-      enable_safety_checker: true,
+      strength: 0.1, // Ultra-conservative for absolute accuracy (90% preservation)
+    guidance: 6.0,
+    guidance_scale: 6.0,
+    num_inference_steps: 200, // Maximum steps for highest quality
+    enable_safety_checker: true,
     }
   })
 

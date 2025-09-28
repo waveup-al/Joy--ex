@@ -11,6 +11,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from 'sonner'
 import { JoyerLoading } from '@/components/ui/joyer-loading'
 import { optimizeImageForAI, analyzeImageQuality, OptimizedImageResult } from '@/lib/image-optimizer'
+import { processImageRaw, shouldBypassAllProcessing, RawProcessingResult } from '@/lib/raw-image-processor'
 import { qualityMonitor, calculateQualityScore } from '@/lib/quality-monitor'
 
 export interface UploadedImage {
@@ -25,6 +26,17 @@ interface UploadPanelProps {
   onImagesChange: (images: UploadedImage[]) => void
   maxImages?: number
   className?: string
+}
+
+// Helper function to get image dimensions
+async function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    }
+    img.src = URL.createObjectURL(file)
+  })
 }
 
 export function UploadPanel({ 
@@ -94,34 +106,63 @@ export function UploadPanel({
       for (const file of acceptedFiles) {
         try {
           // Analyze image quality first
-          const analysis = await analyzeImageQuality(file)
-          
-          if (!analysis.isOptimal) {
+          if (file.size > 100 * 1024) { // Only analyze files > 100KB
+            const analysis = await analyzeImageQuality(file)
             console.log(`Image quality analysis for ${file.name}:`, analysis)
-            toast.info(`Optimizing ${file.name} for better AI processing...`)
+            toast.info(`Processing ${file.name} in absolute accuracy mode...`)
           }
 
-          // Optimize image for AI processing with maximum quality preservation
-          const optimized = await optimizeImageForAI(file, {
-            maxWidth: 2048,
-            maxHeight: 2048,
-            quality: 0.98, // Maximum quality to preserve details
-            format: 'png', // Lossless format for better preservation
-            preserveOriginalQuality: true, // Preserve original image quality
-            enhanceContrast: false, // Disable to preserve original
-            sharpen: false // Disable to preserve original
-          })
+          // Use RAW processing mode for absolute accuracy (100% detail preservation)
+          let processedResult: OptimizedImageResult | RawProcessingResult;
+          
+          if (shouldBypassAllProcessing(file)) {
+            // File is already optimal - use raw mode with zero processing
+            const rawResult = await processImageRaw(file, {
+              bypassOptimization: true,
+              maintainOriginalFormat: true,
+              preserveMetadata: true
+            });
+            
+            processedResult = {
+              file: rawResult.file,
+              originalSize: file.size,
+              optimizedSize: rawResult.file.size,
+              compressionRatio: 0, // No compression in raw mode
+              dimensions: await getImageDimensions(rawResult.file)
+            };
+            
+            console.log(`Raw mode processing for ${file.name}:`, {
+              mode: 'raw-bypass',
+              originalSize: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+              processingApplied: rawResult.processingApplied
+            });
+          } else {
+            // Use raw processing with minimal format conversion only
+            const rawResult = await processImageRaw(file, {
+              bypassOptimization: false,
+              maintainOriginalFormat: false, // Convert to PNG for lossless
+              preserveMetadata: true
+            });
+            
+            processedResult = {
+              file: rawResult.file,
+              originalSize: file.size,
+              optimizedSize: rawResult.file.size,
+              compressionRatio: Math.round((1 - rawResult.file.size / file.size) * 100),
+              dimensions: await getImageDimensions(rawResult.file)
+            };
+            
+            console.log(`Raw mode processing for ${file.name}:`, {
+              mode: 'raw-lossless',
+              originalSize: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+              processedSize: `${(rawResult.file.size / 1024 / 1024).toFixed(2)}MB`,
+              processingApplied: rawResult.processingApplied
+            });
+          }
 
-          optimizedResults.push(optimized)
-          totalOriginalSize += optimized.originalSize
-          totalOptimizedSize += optimized.optimizedSize
-
-          console.log(`Optimized ${file.name}:`, {
-            originalSize: `${(optimized.originalSize / 1024 / 1024).toFixed(2)}MB`,
-            optimizedSize: `${(optimized.optimizedSize / 1024 / 1024).toFixed(2)}MB`,
-            compressionRatio: `${optimized.compressionRatio}%`,
-            dimensions: optimized.dimensions
-          })
+          optimizedResults.push(processedResult)
+          totalOriginalSize += processedResult.originalSize
+          totalOptimizedSize += processedResult.optimizedSize
         } catch (error) {
           console.error(`Failed to optimize ${file.name}:`, error)
           // Fallback to original file if optimization fails

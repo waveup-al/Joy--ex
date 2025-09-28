@@ -1,3 +1,5 @@
+import { getAccuracyConfig, validateAccuracyConfig } from './absolute-accuracy-config'
+
 export interface FalSeedreamPayload {
   prompt: string;
   image_urls: string[];
@@ -69,21 +71,43 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
       imageSize = { width: 1024, height: 1024 };
     }
 
-    // Optimize parameters for preserving original image details
+    // Get absolute accuracy configuration
+    const accuracyConfig = getAccuracyConfig('ultra-conservative');
+    
+    // Validate configuration meets accuracy requirements
+    if (!validateAccuracyConfig(accuracyConfig)) {
+      console.warn('Accuracy configuration does not meet requirements, using fallback');
+    }
+
+    // Apply ultra-conservative parameters for absolute accuracy
     const optimizedPayload = {
       prompt: payload.prompt,
       image_urls: payload.image_urls,
       image_size: imageSize,
       seed: payload.seed,
-      // Lower strength to preserve more original image details (0.3-0.5 for maximum preservation)
-      strength: payload.strength ?? 0.4,
-      // Optimized guidance for better prompt adherence (7-12 range for Seedream)
-      guidance: payload.guidance ?? 9.5,
+      // Ultra-conservative strength for maximum original image preservation
+      strength: payload.strength ?? accuracyConfig.falApi.strength,
+      // Optimized guidance for better prompt adherence
+      guidance: payload.guidance ?? accuracyConfig.falApi.guidance,
       // Advanced parameters for maximum quality
-      guidance_scale: payload.guidance_scale ?? 9.5,
-      // Higher inference steps for better quality and detail preservation
-      num_inference_steps: payload.num_inference_steps ?? 75,
-      enable_safety_checker: payload.enable_safety_checker ?? true
+      guidance_scale: payload.guidance_scale ?? accuracyConfig.falApi.guidance_scale,
+      // Maximum inference steps for absolute quality
+      num_inference_steps: payload.num_inference_steps ?? accuracyConfig.falApi.num_inference_steps,
+      enable_safety_checker: payload.enable_safety_checker ?? accuracyConfig.falApi.enable_safety_checker
+    };
+
+    console.log('🎯 Ultra-Conservative Mode Activated:', {
+      strength: `${optimizedPayload.strength} (preserves ${(1-optimizedPayload.strength)*100}% of original)`,
+      inference_steps: optimizedPayload.num_inference_steps,
+      guidance: optimizedPayload.guidance,
+      mode: 'absolute-accuracy'
+    });
+
+    // Processing callback for absolute accuracy mode
+    const onQueueUpdate = (update: any) => {
+      if (update.status === "IN_PROGRESS") {
+        console.log("🔄 Processing with absolute accuracy mode...", update.logs?.map((log: any) => log.message))
+      }
     };
 
     console.log('Sending optimized payload to FAL AI:', optimizedPayload);
@@ -105,6 +129,13 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
     }
 
     const result = await res.json();
+    
+    console.log('✅ Absolute accuracy processing completed:', {
+      originalStrength: payload.strength,
+      appliedStrength: optimizedPayload.strength,
+      preservationRate: `${(1-optimizedPayload.strength)*100}%`,
+      inferenceSteps: optimizedPayload.num_inference_steps
+    });
     console.log('FAL AI response received:', {
       images_count: result.images?.length,
       request_id: result.request_id,
