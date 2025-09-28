@@ -16,10 +16,10 @@ import { cn } from '@/lib/utils'
 
 const promptSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
-  size: z.enum(['1024x1024', '1280x720', '2048x2048']).default('1024x1024'),
+  size: z.enum(['1024x1024', '1280x720', '2048x2048']).default('2048x2048'),
   seed: z.number().min(0).max(2147483647).optional(),
-  strength: z.number().min(0).max(1).default(0.8),
-  guidance: z.number().min(1).max(20).default(7.5),
+  strength: z.number().min(0).max(1).default(0.75),
+  guidance: z.number().min(1).max(20).default(12),
 })
 
 export type PromptFormData = z.infer<typeof promptSchema>

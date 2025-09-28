@@ -5,6 +5,10 @@ export interface FalSeedreamPayload {
   seed?: number;
   strength?: number;
   guidance?: number;
+  num_inference_steps?: number;
+  enable_safety_checker?: boolean;
+  format?: string;
+  quality?: number;
 }
 
 export interface FalSeedreamResponse {
@@ -72,7 +76,9 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
       image_size: imageSize,
       seed: payload.seed,
       strength: payload.strength,
-      guidance: payload.guidance
+      guidance: payload.guidance,
+      num_inference_steps: 50, // Tăng số bước inference để cải thiện chất lượng
+      enable_safety_checker: false // Tắt safety checker để tránh làm giảm chất lượng
     });
 
     // Try to use real FAL API
@@ -88,7 +94,11 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
         image_size: imageSize,
         seed: payload.seed,
         strength: payload.strength,
-        guidance: payload.guidance
+        guidance: payload.guidance,
+        num_inference_steps: 50, // Tăng số bước inference
+        enable_safety_checker: false, // Tắt safety checker
+        format: "jpeg", // Đảm bảo format ảnh chất lượng cao
+        quality: 95 // Đặt chất lượng JPEG cao nhất
       })
     });
 
@@ -137,11 +147,20 @@ export function validateImageUrls(urls: string[]): boolean {
 export function generateMultiImagePrompt(userPrompt: string, imageCount: number): string {
   // Enhanced prompt with more specific instructions for better AI understanding
   const enhancedPrompt = `
-TASK: Transform and edit all ${imageCount} uploaded images according to the following detailed instructions.
+TASK: Transform and edit all ${imageCount} uploaded images according to the following detailed instructions with MAXIMUM QUALITY and PRECISION.
 
 USER REQUEST: ${userPrompt}
 
-REQUIREMENTS:
+QUALITY REQUIREMENTS:
+- Generate images at HIGHEST possible resolution and quality
+- Maintain PERFECT detail preservation from original images
+- Use MAXIMUM inference steps for best quality
+- Apply changes with PHOTOREALISTIC precision
+- Preserve ALL fine details, textures, and subtle elements
+- Ensure CRISP, SHARP output without any quality loss
+- Maintain original image fidelity at 100% where not modified
+
+TECHNICAL REQUIREMENTS:
 - Apply the requested changes consistently across all ${imageCount} images
 - Maintain high image quality and professional appearance
 - Preserve the original composition and important elements unless specifically requested to change
@@ -152,9 +171,9 @@ REQUIREMENTS:
 - If adding objects or elements, integrate them naturally into the scene
 - Maintain visual coherence between all processed images
 
-STYLE: Photorealistic, high-quality, professional result that looks natural and believable.
+STYLE: Photorealistic, ULTRA HIGH-QUALITY, professional result that looks natural and believable with MAXIMUM detail preservation.
 
-Please execute this transformation with precision and attention to detail.
+Please execute this transformation with MAXIMUM precision and attention to detail.
   `.trim();
   
   return enhancedPrompt;
@@ -162,7 +181,16 @@ Please execute this transformation with precision and attention to detail.
 
 export function generateCompetitorReplacePrompt(addonPrompt?: string): string {
   const basePrompt = `
-TASK: Replace the competitor product in the reference images with our product while maintaining professional advertising quality.
+TASK: Replace the competitor product in the reference images with our product while maintaining MAXIMUM QUALITY and PROFESSIONAL advertising standards.
+
+QUALITY REQUIREMENTS:
+- Generate images at HIGHEST possible resolution and quality
+- Maintain PERFECT detail preservation from original images
+- Use MAXIMUM inference steps for best quality
+- Apply changes with PHOTOREALISTIC precision
+- Preserve ALL fine details, textures, and subtle elements
+- Ensure CRISP, SHARP output without any quality loss
+- Maintain original image fidelity at 100% where not modified
 
 CORE REQUIREMENTS:
 - Seamlessly replace the competitor product with our product
@@ -176,14 +204,14 @@ CORE REQUIREMENTS:
 - Ensure the final result looks like a professional product photograph
 
 QUALITY STANDARDS:
-- Photorealistic, high-resolution output
+- Photorealistic, ULTRA HIGH-RESOLUTION output
 - Professional advertising photography quality
 - Natural integration without obvious editing artifacts
 - Consistent visual style across all processed images
 - Sharp details and proper focus
 - Accurate colors and materials representation
 
-STYLE: Professional product photography, commercial advertising quality, photorealistic.
+STYLE: Professional product photography, commercial advertising quality, photorealistic with MAXIMUM detail preservation.
   `.trim();
   
   if (addonPrompt) {
