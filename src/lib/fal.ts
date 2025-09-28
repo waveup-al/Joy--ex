@@ -1,5 +1,3 @@
-import { getAccuracyConfig, validateAccuracyConfig } from './absolute-accuracy-config'
-
 export interface FalSeedreamPayload {
   prompt: string;
   image_urls: string[];
@@ -7,10 +5,6 @@ export interface FalSeedreamPayload {
   seed?: number;
   strength?: number;
   guidance?: number;
-  // Advanced quality parameters
-  guidance_scale?: number;
-  num_inference_steps?: number;
-  enable_safety_checker?: boolean;
 }
 
 export interface FalSeedreamResponse {
@@ -71,46 +65,15 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
       imageSize = { width: 1024, height: 1024 };
     }
 
-    // Get absolute accuracy configuration
-    const accuracyConfig = getAccuracyConfig('ultra-conservative');
-    
-    // Validate configuration meets accuracy requirements
-    if (!validateAccuracyConfig(accuracyConfig)) {
-      console.warn('Accuracy configuration does not meet requirements, using fallback');
-    }
-
-    // Apply ultra-conservative parameters for absolute accuracy
-    const optimizedPayload = {
+    console.log('Sending payload to FAL AI:', {
       prompt: payload.prompt,
       image_urls: payload.image_urls,
+      image_count: payload.image_urls.length,
       image_size: imageSize,
       seed: payload.seed,
-      // Ultra-conservative strength for maximum original image preservation
-      strength: payload.strength ?? accuracyConfig.falApi.strength,
-      // Optimized guidance for better prompt adherence
-      guidance: payload.guidance ?? accuracyConfig.falApi.guidance,
-      // Advanced parameters for maximum quality
-      guidance_scale: payload.guidance_scale ?? accuracyConfig.falApi.guidance_scale,
-      // Maximum inference steps for absolute quality
-      num_inference_steps: payload.num_inference_steps ?? accuracyConfig.falApi.num_inference_steps,
-      enable_safety_checker: payload.enable_safety_checker ?? accuracyConfig.falApi.enable_safety_checker
-    };
-
-    console.log('🎯 Ultra-Conservative Mode Activated:', {
-      strength: `${optimizedPayload.strength} (preserves ${(1-optimizedPayload.strength)*100}% of original)`,
-      inference_steps: optimizedPayload.num_inference_steps,
-      guidance: optimizedPayload.guidance,
-      mode: 'absolute-accuracy'
+      strength: payload.strength,
+      guidance: payload.guidance
     });
-
-    // Processing callback for absolute accuracy mode
-    const onQueueUpdate = (update: any) => {
-      if (update.status === "IN_PROGRESS") {
-        console.log("🔄 Processing with absolute accuracy mode...", update.logs?.map((log: any) => log.message))
-      }
-    };
-
-    console.log('Sending optimized payload to FAL AI:', optimizedPayload);
 
     // Try to use real FAL API
     const res = await fetch("https://fal.run/fal-ai/bytedance/seedream/v4/edit", {
@@ -119,7 +82,14 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
         "Authorization": `Key ${falKey}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(optimizedPayload)
+      body: JSON.stringify({
+        prompt: payload.prompt,
+        image_urls: payload.image_urls,
+        image_size: imageSize,
+        seed: payload.seed,
+        strength: payload.strength,
+        guidance: payload.guidance
+      })
     });
 
     if (!res.ok) {
@@ -129,13 +99,6 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
     }
 
     const result = await res.json();
-    
-    console.log('✅ Absolute accuracy processing completed:', {
-      originalStrength: payload.strength,
-      appliedStrength: optimizedPayload.strength,
-      preservationRate: `${(1-optimizedPayload.strength)*100}%`,
-      inferenceSteps: optimizedPayload.num_inference_steps
-    });
     console.log('FAL AI response received:', {
       images_count: result.images?.length,
       request_id: result.request_id,
@@ -171,61 +134,61 @@ export function validateImageUrls(urls: string[]): boolean {
   });
 }
 
-export function generateMultiImagePrompt(userInstruction: string): string {
-  // Enhanced prompt engineering for better accuracy and quality
-  const basePrompt = `Professional high-quality image transformation: ${userInstruction}. 
+export function generateMultiImagePrompt(userPrompt: string, imageCount: number): string {
+  // Enhanced prompt with more specific instructions for better AI understanding
+  const enhancedPrompt = `
+TASK: Transform and edit all ${imageCount} uploaded images according to the following detailed instructions.
 
-QUALITY REQUIREMENTS:
-- Ultra-high resolution and sharp details
-- Photorealistic rendering with perfect lighting
-- Maintain original composition and perspective
-- Preserve all important visual elements
-- Professional photography quality
-- Natural color grading and contrast
-- Crisp edges and fine textures
+USER REQUEST: ${userPrompt}
 
-TECHNICAL SPECIFICATIONS:
-- 4K resolution quality
-- Professional color accuracy
-- Optimal exposure and dynamic range
-- No artifacts or distortions
-- Seamless integration of changes
+REQUIREMENTS:
+- Apply the requested changes consistently across all ${imageCount} images
+- Maintain high image quality and professional appearance
+- Preserve the original composition and important elements unless specifically requested to change
+- Ensure realistic lighting, shadows, and proportions
+- Keep the same aspect ratio and resolution as the original images
+- Make the changes look natural and seamless
+- Pay attention to details like textures, colors, and materials
+- If adding objects or elements, integrate them naturally into the scene
+- Maintain visual coherence between all processed images
 
-Style: Professional photography, commercial quality, studio lighting, perfect composition, award-winning image quality.`;
+STYLE: Photorealistic, high-quality, professional result that looks natural and believable.
 
-  return basePrompt;
+Please execute this transformation with precision and attention to detail.
+  `.trim();
+  
+  return enhancedPrompt;
 }
 
-export function generateCompetitorReplacePrompt(userInstruction: string): string {
-  // Enhanced prompt for competitor replacement with quality focus
-  const basePrompt = `Professional product replacement and brand transformation: ${userInstruction}
+export function generateCompetitorReplacePrompt(addonPrompt?: string): string {
+  const basePrompt = `
+TASK: Replace the competitor product in the reference images with our product while maintaining professional advertising quality.
 
-REPLACEMENT REQUIREMENTS:
-- Seamlessly replace competitor products with specified alternatives
-- Maintain exact positioning, scale, and perspective
-- Perfect lighting and shadow matching
-- Natural integration with existing environment
-- Preserve all background elements and context
-- Professional product photography quality
+CORE REQUIREMENTS:
+- Seamlessly replace the competitor product with our product
+- Maintain the exact same style, lighting, and composition as the original
+- Preserve the background, setting, and overall scene atmosphere
+- Ensure our product fits naturally in the scene with proper scale and positioning
+- Match the lighting direction, intensity, and color temperature
+- Maintain realistic shadows, reflections, and depth of field
+- Keep the same camera angle and perspective
+- Preserve any text, logos, or branding elements that should remain
+- Ensure the final result looks like a professional product photograph
 
 QUALITY STANDARDS:
-- Ultra-high resolution commercial photography
-- Perfect color matching and consistency  
-- Realistic material textures and finishes
-- Professional studio lighting simulation
-- No visible editing artifacts or seams
-- Photorealistic product rendering
-- Commercial advertising quality output
+- Photorealistic, high-resolution output
+- Professional advertising photography quality
+- Natural integration without obvious editing artifacts
+- Consistent visual style across all processed images
+- Sharp details and proper focus
+- Accurate colors and materials representation
 
-TECHNICAL PRECISION:
-- Exact dimensional accuracy
-- Proper perspective and depth
-- Natural shadow casting and reflections
-- Consistent lighting direction and intensity
-- Professional color grading
-- Sharp focus and crisp details
-
-Style: Commercial product photography, professional advertising quality, studio-perfect lighting, award-winning commercial imagery, photorealistic rendering.`;
-
+STYLE: Professional product photography, commercial advertising quality, photorealistic.
+  `.trim();
+  
+  if (addonPrompt) {
+    return `${basePrompt}\n\nADDITIONAL REQUIREMENTS: ${addonPrompt}`;
+  }
+  
   return basePrompt;
 }

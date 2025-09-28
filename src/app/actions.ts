@@ -110,6 +110,7 @@ export async function saveHistoryMeta(_jobId: string, _userId: string, _meta: Re
   try {
     // This would update job metadata if needed
     // Implementation depends on specific requirements
+    // Parameters are prefixed with _ to indicate they're intentionally unused for now
     revalidatePath('/app/history')
     return { success: true }
   } catch (error) {

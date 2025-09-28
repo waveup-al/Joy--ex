@@ -18,12 +18,8 @@ const promptSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
   size: z.enum(['1024x1024', '1280x720', '2048x2048']).default('1024x1024'),
   seed: z.number().min(0).max(2147483647).optional(),
-  strength: z.number().min(0).max(1).default(0.75), // Optimized default
-  guidance: z.number().min(1).max(20).default(9.5), // Optimized default
-  // Advanced quality parameters
-  guidance_scale: z.number().min(1).max(20).default(9.5),
-  num_inference_steps: z.number().min(10).max(100).default(50),
-  enable_safety_checker: z.boolean().default(true),
+  strength: z.number().min(0).max(1).default(0.8),
+  guidance: z.number().min(1).max(20).default(7.5),
 })
 
 export type PromptFormData = z.infer<typeof promptSchema>
@@ -73,11 +69,8 @@ export function PromptPanel({
     defaultValues: {
       prompt: '',
       size: '1024x1024' as const,
-      strength: 0.1, // Ultra-conservative for absolute accuracy (90% preservation)
-    guidance: 6.0,
-    guidance_scale: 6.0,
-    num_inference_steps: 200, // Maximum steps for highest quality
-    enable_safety_checker: true,
+      strength: 0.8,
+      guidance: 7.5,
     }
   })
 
@@ -92,9 +85,6 @@ export function PromptPanel({
 
   const strengthValue = form.watch('strength')
   const guidanceValue = form.watch('guidance')
-  const guidanceScaleValue = form.watch('guidance_scale')
-  const inferenceStepsValue = form.watch('num_inference_steps')
-  const safetyCheckerValue = form.watch('enable_safety_checker')
 
   return (
     <Card className={cn("bg-gradient-to-br from-pink-50/50 to-purple-50/50", className)}>
@@ -213,19 +203,19 @@ export function PromptPanel({
                   <div className="flex items-center justify-between">
                     <Label>Edit Strength</Label>
                     <span className="text-sm text-muted-foreground">
-                      {(strengthValue ?? 0.75).toFixed(2)}
+                      {(strengthValue ?? 0.8).toFixed(1)}
                     </span>
                   </div>
                   <Slider
-                    value={[strengthValue ?? 0.75]}
+                    value={[strengthValue ?? 0.8]}
                     onValueChange={([value]) => form.setValue('strength', value)}
                     min={0}
                     max={1}
-                    step={0.05}
+                    step={0.1}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
-                    0.7-0.85 optimal for image fidelity
+                    Higher values = more dramatic changes
                   </p>
                 </div>
 
@@ -234,11 +224,11 @@ export function PromptPanel({
                   <div className="flex items-center justify-between">
                     <Label>Guidance Scale</Label>
                     <span className="text-sm text-muted-foreground">
-                      {(guidanceValue ?? 9.5).toFixed(1)}
+                      {(guidanceValue ?? 7.5).toFixed(1)}
                     </span>
                   </div>
                   <Slider
-                    value={[guidanceValue ?? 9.5]}
+                    value={[guidanceValue ?? 7.5]}
                     onValueChange={([value]) => form.setValue('guidance', value)}
                     min={1}
                     max={20}
@@ -246,69 +236,8 @@ export function PromptPanel({
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
-                    7-12 optimal for Seedream quality
+                    Higher values = more adherence to prompt
                   </p>
-                </div>
-
-                {/* Advanced Quality Controls */}
-                <div className="space-y-4 pt-4 border-t">
-                  <h4 className="text-sm font-medium text-purple-900">Professional Quality Controls</h4>
-                  
-                  {/* Guidance Scale (Advanced) */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Advanced Guidance</Label>
-                      <span className="text-sm text-muted-foreground">
-                        {(guidanceScaleValue ?? 9.5).toFixed(1)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[guidanceScaleValue ?? 9.5]}
-                      onValueChange={([value]) => form.setValue('guidance_scale', value)}
-                      min={1}
-                      max={20}
-                      step={0.5}
-                      className="w-full"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Fine-tune prompt adherence for maximum quality
-                    </p>
-                  </div>
-
-                  {/* Inference Steps */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Inference Steps</Label>
-                      <span className="text-sm text-muted-foreground">
-                        {inferenceStepsValue ?? 50}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[inferenceStepsValue ?? 50]}
-                      onValueChange={([value]) => form.setValue('num_inference_steps', value)}
-                      min={10}
-                      max={100}
-                      step={5}
-                      className="w-full"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      More steps = higher quality (50+ recommended)
-                    </p>
-                  </div>
-
-                  {/* Safety Checker */}
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="safety-checker"
-                      checked={safetyCheckerValue ?? true}
-                      onChange={(e) => form.setValue('enable_safety_checker', e.target.checked)}
-                      className="rounded border-gray-300"
-                    />
-                    <Label htmlFor="safety-checker" className="text-sm">
-                      Enable Safety Checker (Recommended)
-                    </Label>
-                  </div>
                 </div>
               </div>
             )}

@@ -1,5 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+// import { UploadThingError } from "uploadthing/server"; // Commented out as not currently used
 
 const f = createUploadthing();
 
@@ -8,9 +8,10 @@ export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({ image: { maxFileSize: "8MB", maxFileCount: 10 } })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
+    .middleware(async ({ req: _req }) => {
       // This code runs on your server before upload
       // You can add authentication checks here if needed
+      // req parameter prefixed with _ as it's not currently used
       
       // For now, allow all uploads (you can add auth later)
       return { userId: "demo-user" };
