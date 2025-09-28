@@ -101,14 +101,15 @@ export function UploadPanel({
             toast.info(`Optimizing ${file.name} for better AI processing...`)
           }
 
-          // Optimize image for AI processing
+          // Optimize image for AI processing with maximum quality preservation
           const optimized = await optimizeImageForAI(file, {
             maxWidth: 2048,
             maxHeight: 2048,
-            quality: 0.92, // High quality for AI
-            format: 'jpeg',
-            enhanceContrast: true,
-            sharpen: true
+            quality: 0.98, // Maximum quality to preserve details
+            format: 'png', // Lossless format for better preservation
+            preserveOriginalQuality: true, // Preserve original image quality
+            enhanceContrast: false, // Disable to preserve original
+            sharpen: false // Disable to preserve original
           })
 
           optimizedResults.push(optimized)

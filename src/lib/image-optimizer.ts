@@ -11,6 +11,7 @@ export interface ImageOptimizationOptions {
   maintainAspectRatio?: boolean;
   enhanceContrast?: boolean;
   sharpen?: boolean;
+  preserveOriginalQuality?: boolean; // New option to preserve maximum quality
 }
 
 export interface OptimizedImageResult {
@@ -34,11 +35,12 @@ export async function optimizeImageForAI(
   const {
     maxWidth = 2048,
     maxHeight = 2048,
-    quality = 0.92, // High quality for AI processing
-    format = 'jpeg',
+    quality = 0.98, // Maximum quality for preserving details
+    format = 'png', // PNG for lossless compression
     maintainAspectRatio = true,
-    enhanceContrast = true,
-    sharpen = true
+    enhanceContrast = false, // Disabled by default to preserve original
+    sharpen = false, // Disabled by default to preserve original
+    preserveOriginalQuality = true // New default to preserve quality
   } = options;
 
   return new Promise((resolve, reject) => {
@@ -73,8 +75,8 @@ export async function optimizeImageForAI(
         // Draw image with high quality
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Apply image enhancements for better AI processing
-        if (enhanceContrast || sharpen) {
+        // Apply image enhancements only if not preserving original quality
+        if (!preserveOriginalQuality && (enhanceContrast || sharpen)) {
           applyImageEnhancements(ctx, width, height, {
             enhanceContrast,
             sharpen

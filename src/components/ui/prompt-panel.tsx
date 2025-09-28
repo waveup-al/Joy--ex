@@ -73,10 +73,10 @@ export function PromptPanel({
     defaultValues: {
       prompt: '',
       size: '1024x1024' as const,
-      strength: 0.75, // Optimized default
+      strength: 0.4, // Lower strength to preserve original image details
       guidance: 9.5, // Optimized default
       guidance_scale: 9.5,
-      num_inference_steps: 50,
+      num_inference_steps: 75, // Higher steps for better quality
       enable_safety_checker: true,
     }
   })

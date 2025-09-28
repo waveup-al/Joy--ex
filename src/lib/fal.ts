@@ -69,19 +69,20 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
       imageSize = { width: 1024, height: 1024 };
     }
 
-    // Optimize parameters for best quality based on research
+    // Optimize parameters for preserving original image details
     const optimizedPayload = {
       prompt: payload.prompt,
       image_urls: payload.image_urls,
       image_size: imageSize,
       seed: payload.seed,
-      // Optimized strength for better image fidelity (0.7-0.85 range for best results)
-      strength: payload.strength ?? 0.75,
+      // Lower strength to preserve more original image details (0.3-0.5 for maximum preservation)
+      strength: payload.strength ?? 0.4,
       // Optimized guidance for better prompt adherence (7-12 range for Seedream)
       guidance: payload.guidance ?? 9.5,
       // Advanced parameters for maximum quality
       guidance_scale: payload.guidance_scale ?? 9.5,
-      num_inference_steps: payload.num_inference_steps ?? 50,
+      // Higher inference steps for better quality and detail preservation
+      num_inference_steps: payload.num_inference_steps ?? 75,
       enable_safety_checker: payload.enable_safety_checker ?? true
     };
 
