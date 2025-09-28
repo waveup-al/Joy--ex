@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,16 @@ import { toast } from 'sonner'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
   // const router = useRouter()
+
+  // Display authentication errors from URL params
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      toast.error(decodeURIComponent(error))
+    }
+  }, [searchParams])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,7 +38,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/app`
+          emailRedirectTo: `${window.location.origin}/auth/callback`
         }
       })
 
@@ -52,7 +62,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/app`
+          redirectTo: `${window.location.origin}/auth/callback`
         }
       })
 
