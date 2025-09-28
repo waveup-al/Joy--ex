@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Tắt tối ưu hóa cho ảnh từ FAL AI để giữ nguyên chất lượng gốc
-    unoptimized: false,
+    // Tắt tối ưu hóa cho ảnh từ FAL AI để giữ nguyên chất lượng gốc 1MB
+    unoptimized: true,
     // Cấu hình domains được phép
     remotePatterns: [
       {

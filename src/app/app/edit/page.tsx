@@ -15,7 +15,7 @@ import { UploadedImage } from '@/components/ui/upload-panel'
 
 interface EditFormData {
   prompt: string
-  size: '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072'
+  size: '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072' | '4096x4096'
   seed?: number
   strength?: number
   guidance?: number
@@ -108,13 +108,15 @@ export default function MultiImageEditPage() {
                 images: result.output_url ? [{
                   url: result.output_url,
                   width: result.size === '1280x720' ? 1280 : 
-                         result.size === '2048x2048' ? 2048 : 
-                         result.size === '2560x1440' ? 2560 :
-                         result.size === '3072x3072' ? 3072 : 1024,
+                          result.size === '2048x2048' ? 2048 : 
+                          result.size === '2560x1440' ? 2560 :
+                          result.size === '3072x3072' ? 3072 :
+                          result.size === '4096x4096' ? 4096 : 1024,
                   height: result.size === '1280x720' ? 720 : 
                           result.size === '2048x2048' ? 2048 : 
                           result.size === '2560x1440' ? 1440 :
-                          result.size === '3072x3072' ? 3072 : 1024
+                          result.size === '3072x3072' ? 3072 :
+                          result.size === '4096x4096' ? 4096 : 1024
                 }] : []
               } : null}
               loading={isGenerating}

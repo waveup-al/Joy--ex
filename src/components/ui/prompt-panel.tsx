@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils'
 
 const promptSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
-  size: z.enum(['1024x1024', '1280x720', '2048x2048', '2560x1440', '3072x3072']).default('2048x2048'),
+  size: z.enum(['1024x1024', '1280x720', '2048x2048', '2560x1440', '3072x3072', '4096x4096']).default('2048x2048'),
   seed: z.number().min(0).max(2147483647).optional(),
   strength: z.number().min(0).max(1).default(0.75),
   guidance: z.number().min(1).max(20).default(12),
@@ -150,7 +150,7 @@ export function PromptPanel({
               <Label htmlFor="size">Output Size</Label>
               <Select
                 value={form.watch('size')}
-                onValueChange={(value) => form.setValue('size', value as '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072')}
+                onValueChange={(value) => form.setValue('size', value as '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072' | '4096x4096')}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -161,6 +161,7 @@ export function PromptPanel({
                   <SelectItem value="2048x2048">Large Square (2048&times;2048)</SelectItem>
                   <SelectItem value="2560x1440">Ultra HD (2560&times;1440)</SelectItem>
                   <SelectItem value="3072x3072">Ultra Large Square (3072&times;3072)</SelectItem>
+                  <SelectItem value="4096x4096">4K Ultra Square (4096&times;4096)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

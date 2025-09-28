@@ -15,7 +15,7 @@ import { UploadedImage } from '@/components/ui/upload-panel'
 
 interface ReplaceFormData {
   prompt: string
-  size: '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072'
+  size: '1024x1024' | '1280x720' | '2048x2048' | '2560x1440' | '3072x3072' | '4096x4096'
   seed?: number
   strength?: number
   guidance?: number
