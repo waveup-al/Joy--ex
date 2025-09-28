@@ -8,10 +8,10 @@ export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({ image: { maxFileSize: "8MB", maxFileCount: 10 } })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req: _req }) => {
+    .middleware(async ({ req }) => {
       // This code runs on your server before upload
       // You can add authentication checks here if needed
-      // req parameter prefixed with _ as it's not currently used
+      console.log('Upload request from:', req.headers.get('user-agent'))
       
       // For now, allow all uploads (you can add auth later)
       return { userId: "demo-user" };

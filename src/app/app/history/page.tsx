@@ -35,7 +35,8 @@ export default function HistoryPage() {
     try {
       const userJobs = await getUserJobs(user?.id || '')
       setJobs(userJobs)
-    } catch (_error) {
+    } catch (error) {
+      console.error('Failed to load job history:', error)
       toast.error('Failed to load job history')
     } finally {
       setIsLoading(false)
@@ -54,7 +55,8 @@ export default function HistoryPage() {
       await deleteJob(jobId, user?.id || '')
       setJobs(prev => prev.filter(job => job.id !== jobId))
       toast.success('Job deleted successfully')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Failed to delete job:', error)
       toast.error('Failed to delete job')
     } finally {
       setDeletingIds(prev => {
@@ -78,7 +80,8 @@ export default function HistoryPage() {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
       toast.success('Download started')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Failed to download image:', error)
       toast.error('Failed to download image')
     }
   }

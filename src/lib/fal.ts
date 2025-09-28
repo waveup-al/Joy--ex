@@ -1,7 +1,7 @@
 export interface FalSeedreamPayload {
   prompt: string;
   image_urls: string[];
-  size?: "1024x1024" | "1280x720" | "2048x2048";
+  size?: "1024x1024" | "1280x720" | "2048x2048" | "2560x1440" | "3072x3072";
   seed?: number;
   strength?: number;
   guidance?: number;
@@ -69,16 +69,17 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
       imageSize = { width: 1024, height: 1024 };
     }
 
-    console.log('Sending payload to FAL AI:', {
-      prompt: payload.prompt,
-      image_urls: payload.image_urls,
+    console.log('Calling FAL API with enhanced quality settings:', {
+      prompt_length: payload.prompt.length,
       image_count: payload.image_urls.length,
-      image_size: imageSize,
+      size: imageSize,
       seed: payload.seed,
       strength: payload.strength,
       guidance: payload.guidance,
-      num_inference_steps: 50, // Tăng số bước inference để cải thiện chất lượng
-      enable_safety_checker: false // Tắt safety checker để tránh làm giảm chất lượng
+      num_inference_steps: 75, // Tăng từ 50 lên 75 để cải thiện chất lượng tối đa
+      enable_safety_checker: false, // Tắt safety checker để tránh làm giảm chất lượng
+      format: "png", // Chuyển sang PNG để giữ chất lượng tối đa không nén
+      quality: 100 // Tăng từ 95 lên 100 cho chất lượng tối đa
     });
 
     // Try to use real FAL API
@@ -95,10 +96,10 @@ export async function falSeedreamEdit(payload: FalSeedreamPayload): Promise<FalS
         seed: payload.seed,
         strength: payload.strength,
         guidance: payload.guidance,
-        num_inference_steps: 50, // Tăng số bước inference
+        num_inference_steps: 75, // Tăng từ 50 lên 75 để cải thiện chất lượng tối đa
         enable_safety_checker: false, // Tắt safety checker
-        format: "jpeg", // Đảm bảo format ảnh chất lượng cao
-        quality: 95 // Đặt chất lượng JPEG cao nhất
+        format: "png", // Chuyển sang PNG để giữ chất lượng tối đa không nén
+        quality: 100 // Tăng từ 95 lên 100 cho chất lượng tối đa
       })
     });
 

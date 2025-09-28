@@ -9,7 +9,7 @@ export interface EditJobInput {
   prompt: string
   imageUrls: string[]
   userId: string
-  size?: "1024x1024" | "1280x720" | "2048x2048"
+  size?: "1024x1024" | "1280x720" | "2048x2048" | "2560x1440" | "3072x3072"
   seed?: number
   strength?: number
   guidance?: number
@@ -106,11 +106,11 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
   }
 }
 
-export async function saveHistoryMeta(_jobId: string, _userId: string, _meta: Record<string, unknown>) {
+export async function saveHistoryMeta(jobId: string, userId: string, meta: Record<string, unknown>) {
   try {
     // This would update job metadata if needed
     // Implementation depends on specific requirements
-    // Parameters are prefixed with _ to indicate they're intentionally unused for now
+    console.log('Saving history meta for job:', jobId, 'user:', userId, 'meta:', meta)
     revalidatePath('/app/history')
     return { success: true }
   } catch (error) {
