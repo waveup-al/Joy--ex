@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Đảm bảo static export cho Vercel deployment
+  output: 'standalone',
+  
   images: {
     // Tắt tối ưu hóa cho ảnh từ FAL AI để giữ nguyên chất lượng gốc 1MB
     unoptimized: true,

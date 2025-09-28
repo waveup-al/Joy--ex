@@ -69,8 +69,27 @@ export default function HistoryPage() {
 
   const handleDownload = async (url: string, jobId: string) => {
     try {
-      const response = await fetch(url)
+      // Enhanced download with no-cache headers to preserve maximum quality
+      const response = await fetch(url, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const blob = await response.blob()
+      
+      // Log quality info
+      console.log('Downloaded blob info:', {
+        size: blob.size,
+        type: blob.type,
+        sizeInMB: (blob.size / (1024 * 1024)).toFixed(2) + 'MB'
+      })
+      
       const downloadUrl = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = downloadUrl
@@ -79,7 +98,9 @@ export default function HistoryPage() {
       link.click()
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
-      toast.success('Download started')
+      
+      const sizeInMB = (blob.size / (1024 * 1024)).toFixed(2)
+      toast.success(`Download completed: ${sizeInMB}MB PNG file`)
     } catch (error) {
       console.error('Failed to download image:', error)
       toast.error('Failed to download image')

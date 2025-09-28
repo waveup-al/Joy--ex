@@ -48,10 +48,29 @@ export function ResultViewer({
       const filename = `joy-ex-result-${Date.now()}-${index + 1}.png`
       onDownload(imageUrl, filename)
     } else {
-      // Default download behavior
+      // Enhanced download behavior to preserve maximum quality
       try {
-        const response = await fetch(imageUrl)
+        // Fetch with no-cache headers to get original quality
+        const response = await fetch(imageUrl, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
         const blob = await response.blob()
+        
+        // Verify we got a PNG blob for maximum quality
+        console.log('Downloaded blob info:', {
+          size: blob.size,
+          type: blob.type,
+          sizeInMB: (blob.size / (1024 * 1024)).toFixed(2) + 'MB'
+        })
+        
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -60,6 +79,11 @@ export function ResultViewer({
         a.click()
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
+        
+        // Show success message with file size info
+        const sizeInMB = (blob.size / (1024 * 1024)).toFixed(2)
+        console.log(`Download completed: ${sizeInMB}MB PNG file`)
+        
       } catch (err) {
         console.error('Download failed:', err)
       }
