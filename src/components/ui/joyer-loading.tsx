@@ -18,12 +18,8 @@ export function JoyerLoading({ className, message = "Generating your image..." }
     "Calm down Joyer! 🎨",
     "Hold your horses! AI is cooking... 🍳",
     "Joyer's having a creative moment... 🤔",
-    "Brewing some pixel magic! ✨",
-    "Teaching pixels to dance... 💃",
-    "AI is caffeinated and ready! ☕",
     "Joyer's in the zone... shh! 🤫",
     "Making art, not war! 🎭",
-    "Pixels are getting their makeover! 💄",
     "Joyer says: 'Almost there, buddy!' 🚀"
   ]
 
@@ -34,7 +30,14 @@ export function JoyerLoading({ className, message = "Generating your image..." }
     "Patience is a virtue! 😌",
     "Good things take time! ⏰",
     "Art in progress... 🎪",
-    "Masterpiece loading... 🖼️"
+    "Masterpiece loading... 🖼️",
+    "Coffee break? Nah, still working! ☕",
+    "Pixels are dancing! 💃",
+    "Magic happens here! ✨",
+    "Brewing some digital awesomeness! 🧙‍♂️",
+    "Hold tight, genius at work! 🤓",
+    "Creating unicorns and rainbows! 🦄",
+    "Joyer's in beast mode! 🔥"
   ]
 
   useEffect(() => {
@@ -58,25 +61,25 @@ export function JoyerLoading({ className, message = "Generating your image..." }
   }, [messages.length, commentQuotes.length])
 
   return (
-    <div className={cn("relative flex flex-col items-center justify-center p-12 space-y-8 min-h-[400px] overflow-hidden bg-white", className)}>
+    <div className={cn("relative flex flex-col items-center justify-center p-12 space-y-8 min-h-[400px] overflow-hidden bg-transparent", className)}>
       
       {/* Comment Bubbles Above Joyer */}
       <div className="relative z-20 mb-4">
         {/* Main Comment Bubble */}
         <div className="relative animate-float">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl px-6 py-4 shadow-lg max-w-xs">
+          <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl px-6 py-4 shadow-lg max-w-xs">
             <p className="text-sm font-semibold text-gray-700 text-center">
               {commentQuotes[currentQuote]}
             </p>
             {/* Speech bubble tail */}
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-r from-blue-50 to-purple-50 border-r-2 border-b-2 border-blue-200 rotate-45"></div>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white/80 backdrop-blur-sm border-r-2 border-b-2 border-gray-200 rotate-45"></div>
           </div>
         </div>
 
         {/* Floating Mini Bubbles */}
-        <div className="absolute -top-8 -left-4 w-3 h-3 bg-blue-200 rounded-full animate-bounce opacity-60" style={{ animationDelay: '0.5s' }}></div>
-        <div className="absolute -top-6 left-8 w-2 h-2 bg-purple-200 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute -top-10 right-2 w-2.5 h-2.5 bg-pink-200 rounded-full animate-bounce opacity-70" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute -top-8 -left-4 w-3 h-3 bg-blue-200/60 rounded-full animate-bounce opacity-60" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute -top-6 left-8 w-2 h-2 bg-purple-200/60 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute -top-10 right-2 w-2.5 h-2.5 bg-pink-200/60 rounded-full animate-bounce opacity-70" style={{ animationDelay: '1.5s' }}></div>
       </div>
 
       {/* Main Joyer Container */}
