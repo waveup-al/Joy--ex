@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Download, RefreshCw, Eye, EyeOff, AlertCircle, ZoomIn, ZoomOut, Maximize2, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import { JoyerLoading } from '@/components/ui/joyer-loading'
 
 export interface GenerationResult {
@@ -189,25 +188,22 @@ export function ResultViewer({
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-muted-foreground">Before</h4>
                   <div className="aspect-square relative rounded-lg overflow-hidden bg-muted">
-                    <Image
+                    <img
                       src={beforeImages[selectedImageIndex] || beforeImages[0]}
                       alt="Before"
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
+                      style={{ imageRendering: 'auto' }}
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-muted-foreground">After</h4>
                   <div className="aspect-square relative rounded-lg overflow-hidden bg-muted">
-                    <Image
+                    <img
                       src={selectedImage.url}
                       alt="Generated result"
-                      fill
-                      className="object-cover"
-                      quality={100}
-                      priority={true}
-                      unoptimized={selectedImage.url.includes('fal.media')}
+                      className="w-full h-full object-cover"
+                      style={{ imageRendering: 'auto' }}
                     />
                   </div>
                 </div>
@@ -245,18 +241,15 @@ export function ResultViewer({
                       }
                     }}
                   >
-                    <Image
+                    <img
                       src={selectedImage.url}
                       alt="Generated result"
-                      fill
                       className={cn(
-                        "object-contain transition-all duration-200",
+                        "w-full h-full object-contain transition-all duration-200",
                         isMagnifying ? "cursor-none" : "cursor-zoom-in"
                       )}
                       onClick={() => !isMagnifying && setIsFullscreen(true)}
-                      quality={100}
-                      priority={true}
-                      unoptimized={selectedImage.url.includes('fal.media')}
+                      style={{ imageRendering: 'auto' }}
                     />
                     
                     {/* Magnifying Glass Overlay */}
@@ -332,15 +325,13 @@ export function ResultViewer({
                           transformOrigin: 'center'
                         }}
                       >
-                        <Image
+                        <img
                           src={selectedImage.url}
                           alt="Generated result"
                           width={selectedImage.width}
                           height={selectedImage.height}
                           className="object-contain"
-                          quality={100}
-                          priority={true}
-                          unoptimized={selectedImage.url.includes('fal.media')}
+                          style={{ imageRendering: 'auto' }}
                         />
                       </div>
                       

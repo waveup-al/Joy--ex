@@ -6,7 +6,6 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X, Upload, GripVertical } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from 'sonner'
 import { JoyerLoading } from '@/components/ui/joyer-loading'
@@ -195,11 +194,11 @@ export function UploadPanel({
               onDragEnd={handleDragEnd}
             >
               <div className="aspect-square relative">
-                <Image
+                <img
                   src={image.url}
                   alt={`Upload ${index + 1}`}
-                  fill
-                  className="object-cover"
+                  className="w-full h-full object-cover"
+                  style={{ imageRendering: 'auto' }}
                 />
                 
                 {/* Overlay */}

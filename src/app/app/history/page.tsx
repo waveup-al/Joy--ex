@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -276,12 +275,11 @@ export default function HistoryPage() {
                     <div className="grid grid-cols-2 gap-2">
                       {job.images.slice(0, 4).map((imageUrl, index) => (
                         <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                          <Image
+                          <img
                             src={imageUrl}
                             alt={`Input ${index + 1}`}
-                            width={200}
-                            height={200}
                             className="w-full h-full object-cover"
+                            style={{ imageRendering: 'auto' }}
                           />
                         </div>
                       ))}
@@ -300,12 +298,11 @@ export default function HistoryPage() {
                     <p className="text-sm font-medium text-muted-foreground mb-2">Result</p>
                     <div className="aspect-square bg-muted rounded-lg overflow-hidden">
                       {job.output_url ? (
-                        <Image
+                        <img
                           src={job.output_url}
                           alt="Generated result"
-                          width={200}
-                          height={200}
                           className="w-full h-full object-cover"
+                          style={{ imageRendering: 'auto' }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
