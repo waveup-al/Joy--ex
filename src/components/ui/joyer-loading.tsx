@@ -73,7 +73,7 @@ export function JoyerLoading({ className, message = "Generating your image..." }
         {/* Simple Loading Dots */}
         <div className="flex justify-center space-x-1">
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
           <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
