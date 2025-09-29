@@ -201,7 +201,7 @@ Please execute this transformation with MAXIMUM precision and attention to detai
 
 export function generateCompetitorReplacePrompt(addonPrompt?: string): string {
   const basePrompt = `
-TASK: Replace the competitor product in the reference images with our product while maintaining ULTRA MAXIMUM QUALITY and PROFESSIONAL advertising standards (2025 Expert Level).
+TASK: Seamlessly replace the competitor product with our product while maintaining ULTRA MAXIMUM QUALITY and PRECISION (Professional 2025 Standards) - identical to Multi Image Edit quality.
 
 🎯 ULTRA HIGH-QUALITY REQUIREMENTS (2025 Professional Standards):
 - Generate images at MAXIMUM possible resolution and quality (1MB+ file size target)
@@ -214,7 +214,7 @@ TASK: Replace the competitor product in the reference images with our product wh
 - Target output file size: 1MB+ for maximum quality retention
 - Use lossless PNG format for zero compression artifacts
 
-🔧 CORE REQUIREMENTS (Expert Level 2025):
+🔧 TECHNICAL REQUIREMENTS (Expert Level 2025):
 - Seamlessly replace the competitor product with our product using professional compositing
 - Maintain the exact same style, lighting, and composition as the original with pixel-perfect accuracy
 - Preserve the background, setting, and overall scene atmosphere with maximum fidelity
@@ -223,7 +223,12 @@ TASK: Replace the competitor product in the reference images with our product wh
 - Maintain realistic shadows, reflections, and depth of field with studio-quality accuracy
 - Keep the same camera angle and perspective with exact positioning
 - Preserve any text, logos, or branding elements that should remain
-- Ensure the final result looks like a professional product photograph with commercial quality
+- Pay attention to micro-details like textures, colors, materials, and surface properties
+- Integrate the new product naturally with expert-level blending and compositing
+- Maintain visual coherence and professional studio appearance
+- Ensure maximum detail retention and sharpness throughout the process
+- Keep the same aspect ratio and resolution as the original images (or higher)
+- Make the changes look natural and seamless with expert-level precision
 
 🏆 QUALITY STANDARDS (Professional 2025):
 - Ultra-photorealistic, MAXIMUM RESOLUTION output (1MB+ target)
@@ -233,8 +238,9 @@ TASK: Replace the competitor product in the reference images with our product wh
 - Razor-sharp details and perfect focus with professional clarity
 - Accurate colors and materials representation with color-grading quality
 - Professional lighting and shadow work with studio-quality results
+- Maintain original image quality standards identical to Multi Image Edit mode
 
-STYLE: Professional product photography, commercial advertising quality, ultra-photorealistic with ABSOLUTE MAXIMUM detail preservation and professional 2025 standards (1MB+ target).
+STYLE: Ultra-photorealistic, MAXIMUM QUALITY (1MB+ target), professional studio result that looks natural and believable with ABSOLUTE MAXIMUM detail preservation and professional 2025 standards - matching Multi Image Edit quality exactly.
   `.trim();
   
   if (addonPrompt) {
