@@ -28,7 +28,7 @@ export default function MultiImageEditPage() {
 
   const handleGenerate = async (formData: EditFormData) => {
     if (images.length === 0) {
-      toast.error('Vui lòng tải lên ít nhất một hình ảnh')
+      toast.error('Please upload at least one image')
       return
     }
 
@@ -55,14 +55,14 @@ export default function MultiImageEditPage() {
           output_url: jobResult.data.images[0]?.url,
           size: formData.size
         })
-        toast.success('Tạo hình ảnh thành công!')
+        toast.success('Image created successfully!')
       } else {
         setResult({ error: jobResult.error })
-        toast.error(jobResult.error || 'Không thể tạo hình ảnh')
+        toast.error(jobResult.error || 'Unable to create image')
       }
     } catch (error) {
-      console.error('Error in handleGenerate:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Không thể tạo hình ảnh'
+        console.error('Generation error:', error)
+        const errorMessage = error instanceof Error ? error.message : 'Unable to create image'
       setResult({ error: errorMessage })
       toast.error(errorMessage)
     } finally {

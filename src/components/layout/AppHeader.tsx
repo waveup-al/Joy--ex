@@ -51,11 +51,11 @@ export function AppHeader() {
         throw error
       }
       
-      toast.success('Đã đăng xuất thành công')
+      toast.success('Successfully logged out')
       router.push('/login')
     } catch (error) {
-      console.error('Sign out error:', error)
-      toast.error('Có lỗi xảy ra khi đăng xuất')
+      console.error('Logout error:', error)
+      toast.error('An error occurred while logging out')
     } finally {
       setIsLoggingOut(false)
     }

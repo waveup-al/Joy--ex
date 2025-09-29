@@ -29,7 +29,7 @@ function LoginForm() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) {
-      toast.error('Vui lòng nhập email')
+      toast.error('Please enter your email')
       return
     }
 
@@ -42,15 +42,13 @@ function LoginForm() {
         }
       })
 
-      if (error) {
-        throw error
-      }
-
-      toast.success('Đã gửi link đăng nhập đến email của bạn!')
-      toast.info('Vui lòng kiểm tra email và click vào link để đăng nhập')
+      if (error) throw error
+      
+      toast.success('Login link sent to your email!')
+      toast.info('Please check your email and click the link to login')
     } catch (error) {
-      console.error('Login error:', error)
-      toast.error(error instanceof Error ? error.message : 'Không thể gửi email đăng nhập')
+        console.error('Login error:', error)
+        toast.error(error instanceof Error ? error.message : 'Unable to send login email')
     } finally {
       setIsLoading(false)
     }
@@ -72,8 +70,8 @@ function LoginForm() {
 
       // The redirect will happen automatically
     } catch (error) {
-      console.error('Google login error:', error)
-      toast.error(error instanceof Error ? error.message : 'Không thể đăng nhập bằng Google')
+        console.error('Google login error:', error)
+        toast.error(error instanceof Error ? error.message : 'Unable to login with Google')
       setIsLoading(false)
     }
   }

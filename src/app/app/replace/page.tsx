@@ -29,11 +29,11 @@ export default function CompetitorStyleReplacePage() {
 
   const handleGenerate = async (formData: ReplaceFormData) => {
     if (competitorImages.length === 0) {
-      toast.error('Vui lòng tải lên ít nhất một hình ảnh đối thủ')
+      toast.error('Please upload at least one competitor image')
       return
     }
     if (productImages.length === 0) {
-      toast.error('Vui lòng tải lên ít nhất một hình ảnh sản phẩm')
+      toast.error('Please upload at least one product image')
       return
     }
 
@@ -61,14 +61,14 @@ export default function CompetitorStyleReplacePage() {
           output_url: jobResult.data.images[0]?.url,
           size: formData.size
         })
-        toast.success('Thay thế phong cách hoàn thành thành công!')
+        toast.success('Style replacement completed successfully!')
       } else {
         setResult({ error: jobResult.error })
-        toast.error(jobResult.error || 'Không thể tạo hình ảnh thay thế')
+        toast.error(jobResult.error || 'Unable to create replacement image')
       }
     } catch (error) {
-      console.error('Error in handleGenerate:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Không thể tạo hình ảnh thay thế'
+        console.error('Error in handleGenerate:', error)
+        const errorMessage = error instanceof Error ? error.message : 'Unable to create replacement image'
       setResult({ error: errorMessage })
       toast.error(errorMessage)
     } finally {
