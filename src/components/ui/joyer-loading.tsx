@@ -15,11 +15,15 @@ export function JoyerLoading({ className, message = "Generating your image..." }
 
   const messages = [
     "Calm down Joyer! 🎨",
-    "AI đang làm phép thuật ✨",
-    "Sắp xong rồi... 🚀",
-    "Tạo ra điều kỳ diệu! 🌟",
-    "Joyer đang suy nghĩ... 🤔",
-    "Nghệ thuật đang được sinh ra! 🎭"
+    "Hold your horses! AI is cooking... 🍳",
+    "Joyer's having a creative moment... 🤔",
+    "Brewing some pixel magic! ✨",
+    "Teaching pixels to dance... 💃",
+    "AI is caffeinated and ready! ☕",
+    "Joyer's in the zone... shh! 🤫",
+    "Making art, not war! 🎭",
+    "Pixels are getting their makeover! 💄",
+    "Joyer says: 'Almost there, buddy!' 🚀"
   ]
 
   useEffect(() => {
@@ -148,7 +152,7 @@ export function JoyerLoading({ className, message = "Generating your image..." }
         
         {/* Fun Status Text */}
         <div className="text-sm text-muted-foreground/80 font-medium animate-pulse">
-          ✨ Đang tạo ra những điều kỳ diệu... ✨
+          ✨ Joyer's working his magic... patience, young padawan! ✨
         </div>
       </div>
     </div>
