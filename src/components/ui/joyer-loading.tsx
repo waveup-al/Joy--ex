@@ -17,7 +17,7 @@ export function JoyerLoading({ className, message = "Generating your image..." }
     "Calm down Joyer! 🎨",
     "Making art, not war! 🎭",
     "Almost there, buddy! 🚀",
-    "Patience is a virtue! 😌",
+    "Patience is a virtue! 🧘‍♂️",
     "Good things take time! ⏰",
     "Art in progress... 🎪",
     "Masterpiece loading... 🖼️"
@@ -42,7 +42,7 @@ export function JoyerLoading({ className, message = "Generating your image..." }
     <div className={cn("flex flex-col items-center justify-center p-8 space-y-6 min-h-[300px] bg-transparent", className)}>
       
       {/* Comment Bubble */}
-      <div className="bg-white/90 border border-gray-200 rounded-xl px-4 py-3 shadow-md max-w-xs">
+      <div className="relative bg-white/90 border border-gray-200 rounded-xl px-4 py-3 shadow-md max-w-xs">
         <p className="text-sm font-medium text-gray-700 text-center">
           {commentQuotes[currentQuote]}
         </p>

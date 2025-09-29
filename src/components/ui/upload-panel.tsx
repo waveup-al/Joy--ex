@@ -159,7 +159,7 @@ export function UploadPanel({
         <Card
           {...getRootProps()}
           className={cn(
-            "border-2 border-dashed p-8 text-center cursor-pointer transition-colors bg-gradient-to-br from-pink-50/50 to-purple-50/50",
+            "border-2 border-dashed p-8 text-center cursor-pointer transition-colors",
             isDragActive ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50",
             isUploading && "pointer-events-none opacity-50"
           )}

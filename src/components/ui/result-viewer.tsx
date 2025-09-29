@@ -92,7 +92,7 @@ export function ResultViewer({
   // Loading State
   if (loading) {
     return (
-      <Card className={cn("bg-gradient-to-br from-pink-50/50 to-purple-50/50", className)}>
+      <Card className={cn("", className)}>
         <CardContent className="p-8">
           <JoyerLoading message="Generating your image..." />
         </CardContent>
@@ -103,7 +103,7 @@ export function ResultViewer({
   // Error State
   if (error) {
     return (
-      <Card className={cn("border-destructive bg-gradient-to-br from-pink-50/50 to-purple-50/50", className)}>
+      <Card className={cn("border-destructive", className)}>
         <CardContent className="p-8">
           <div className="text-center space-y-4">
             <AlertCircle className="h-16 w-16 text-destructive mx-auto" />
