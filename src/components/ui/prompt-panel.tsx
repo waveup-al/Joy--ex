@@ -35,25 +35,11 @@ const JOYEX1_PROMPTS = [
   "Create a professional Amazon advertising image featuring the provided Christmas ornament (must preserve 100% original artwork, text, and details). Scene: Ornament hanging on a beautifully decorated Christmas tree branch with fairy lights, pine garlands, and shiny baubles. Background softly blurred with festive bokeh. Lighting: Soft golden tones with candlelight reflections, highlighting the ornament's surface and material depth. Style: Photorealistic, high-resolution, professional Amazon listing style.",
   "Create an Amazon advertising image featuring the provided Christmas ornament (100% original detail, unchanged). Scene: Ornament placed on a festive holiday dining table surrounded by pine cones, candles, crystal glasses, and wrapped gifts. Warm cozy atmosphere of a family gathering. Lighting: Soft golden tones with candlelight reflections, emphasizing the ornament's texture and depth. Style: Photorealistic, high-resolution, natural holiday setting.",
   "Design a professional Amazon advertising image featuring the provided Christmas ornament (keep all original details unchanged). Scene: Ornament displayed on a wooden windowsill with frosted glass and snow gently falling outside. Nearby candles and pine garlands enhance the cozy setting. Lighting: Soft golden tones with candlelight reflections, highlighting the ornament's surface and material depth. Style: Photorealistic, premium Amazon style.",
-  "Create a professional Amazon advertising image showing the provided Christmas ornament (100% true to input, no alterations). Scene: Ornament carefully placed inside an open festive gift box with tissue paper, surrounded by holiday wrapping paper, pine sprigs, and fairy lights. Atmosphere joyful and gift-focused. Lighting: Soft golden tones with candlelight reflections, emphasizing the ornament's layered material depth. Style: High-resolution, photorealistic, authentic Amazon listing style."
+  "Create a professional Amazon advertising image showing the provided Christmas ornament (100% true to input, no alterations). Scene: Ornament carefully placed inside an open festive gift box with tissue paper, surrounded by holiday wrapping paper, pine sprigs, and fairy lights. Atmosphere joyful and gift-focused. Lighting: Soft golden tones with candlelight reflections, emphasizing the ornament's layered material depth. Style: High-resolution, photorealistic, authentic Amazon listing style.",
+  "Create an Amazon advertising image featuring the provided Christmas ornament (preserve 100% original details). Scene: Ornament displayed on a decorated fireplace mantel with stockings, pine garlands, and glowing candles. A warm fire glows in the background. Lighting: Soft golden tones with candlelight reflections, highlighting the ornament's surface and material depth. Style: Photorealistic, high-resolution, elegant Amazon holiday advertisement."
 ]
 
-const QUICK_PROMPTS = {
-  edit: [
-    "Christmas Tree",
-    "Holiday Dining Table", 
-    "Snowy Windowsill",
-    "Gift Box",
-    "Fireplace Mantel"
-  ],
-  replace: [
-    "Match the lighting perfectly",
-    "Blend seamlessly with background",
-    "Maintain realistic proportions",
-    "Add natural shadows and reflections",
-    "Preserve the original atmosphere"
-  ]
-}
+// Removed legacy QUICK_PROMPTS list per request
 
 const BACKGROUND_PROMPTS = {
   "Christmas Tree": "Create a professional Amazon advertising image featuring the provided Christmas ornament (must preserve 100% original artwork, text, and details). Scene: Ornament hanging on a beautifully decorated Christmas tree branch with fairy lights, pine garlands, and shiny baubles. Background softly blurred with festive bokeh. Lighting: Soft golden tones with candlelight reflections, highlighting the ornament's surface and material depth. Style: Photorealistic, high-resolution, professional Amazon listing style.",
@@ -164,28 +150,7 @@ export function PromptPanel({
               )}
             </div>
 
-            {/* Original Quick Prompts */}
-            <div className="grid grid-cols-1 gap-2">
-              {QUICK_PROMPTS[mode].map((prompt, index) => (
-                <Button
-                  key={index}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="justify-start text-left h-auto py-2 px-3"
-                  onClick={() => {
-                    // Check if this is a background prompt title for edit mode
-                    if (mode === 'edit' && BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS]) {
-                      form.setValue('prompt', BACKGROUND_PROMPTS[prompt as keyof typeof BACKGROUND_PROMPTS])
-                    } else {
-                      form.setValue('prompt', prompt)
-                    }
-                  }}
-                >
-                  {prompt}
-                </Button>
-              ))}
-            </div>
+            {/* Legacy quick prompts removed */}
           </div>
 
           {/* Basic Settings */}
