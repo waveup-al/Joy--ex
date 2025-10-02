@@ -9,7 +9,7 @@ export interface EditJobInput {
   prompt: string
   imageUrls: string[]
   userId: string
-  size?: "1024x1024" | "1280x720" | "2048x2048" | "2560x1440" | "3072x3072" | "4096x4096"
+  size?: '2560x1440' | '4096x4096'
   seed?: number
   strength?: number
   guidance?: number
@@ -56,7 +56,7 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
     const falPayload: FalSeedreamPayload = {
       prompt: finalPrompt,
       image_urls: input.imageUrls,
-      size: input.size,
+      size: input.size ?? '2560x1440',
       seed: input.seed,
       strength: input.strength,
       guidance: input.guidance
@@ -77,7 +77,7 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
         finalPrompt,
         falResponse: result,
         parameters: {
-          size: input.size,
+          size: input.size ?? '2560x1440',
           seed: input.seed,
           strength: input.strength,
           guidance: input.guidance
