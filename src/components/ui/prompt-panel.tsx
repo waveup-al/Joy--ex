@@ -29,6 +29,7 @@ interface PromptPanelProps {
   loading?: boolean
   className?: string
   mode?: 'edit' | 'replace'
+  onBackgroundSelect?: (group: 'Joyex1' | 'Joyex2' | 'Joyex3', title: string) => void
 }
 
 const JOYEX1_PROMPTS = [
@@ -67,6 +68,127 @@ const JOYEX2_TITLES = [
   'Gift Wrapping Station',
 ]
 
+// Joyex3 block: 6 prompts (keep JSON and titles exactly as provided)
+const JOYEX3_PROMPTS = [
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Frost Hero White Background",
+      "type": "image",
+      "requirements": {
+        "product": "Show the ornament’s front side exactly as in Image 1, with full fidelity to artwork, text, and proportions.",
+        "dimensions": "Scale ~10cm, centered on canvas.",
+        "display": "Ornament isolated on icy white background with subtle frosted texture, ribbon visible.",
+        "background": "Clean frosty white-blue gradient, soft snow particles faintly visible.",
+        "lighting": "Cool white studio lighting with icy highlights and gentle shadow under product.",
+        "style": "Amazon-compliant hero photo, ultra-realistic with cold winter tone.",
+        "overlay_text": [
+          "❄ Frost Edition ❄",
+          "Premium Holiday Ornament"
+        ]
+      }
+    }
+  }`,
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Snowy Pine Tree Close-up",
+      "type": "image",
+      "requirements": {
+        "product": "Preserve ornament details exactly, hanging on pine branch.",
+        "dimensions": "Ornament realistic ~10cm vs pine needles.",
+        "display": "Hang ornament on green pine branch dusted with snow.",
+        "background": "Christmas tree bokeh lights in white-blue tone, blurred softly.",
+        "lighting": "Cool icy highlights on ornament, white fairy lights glowing behind, shimmer reflections.",
+        "style": "Ultra-realistic macro lifestyle with cold blue Christmas mood.",
+        "overlay_text": [
+          "✨ Frosted Elegance ✨",
+          "Shine Bright on Snowy Nights"
+        ]
+      }
+    }
+  }`,
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Frosted Window Scene",
+      "type": "image",
+      "requirements": {
+        "product": "Show ornament front faithfully, hanging by frosted window.",
+        "dimensions": "Scale ~10cm compared with window frame.",
+        "display": "Ornament placed near frosty wooden window frame with snowfall outside.",
+        "background": "Cold blue snowy outdoors, pine silhouettes, frosty glass details.",
+        "lighting": "Soft indoor warm light mixed with cold bluish outdoor light, creating contrast.",
+        "style": "Premium lifestyle holiday photography.",
+        "overlay_text": [
+          "❄ Winter Glow ❄",
+          "Bring Light to Frosty Nights"
+        ]
+      }
+    }
+  }`,
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Snow Gift Box Edition",
+      "type": "image",
+      "requirements": {
+        "product": "Show ornament exactly as in Image 1, resting inside a silver gift box.",
+        "dimensions": "Ornament scale ~10cm compared with box.",
+        "display": "Ornament inside icy silver-white gift box with snowy ribbon.",
+        "background": "Snow-dusted pine branches, frosted surface, subtle fairy lights white-blue.",
+        "lighting": "Cool ambient glow with icy highlights reflecting off ornament.",
+        "style": "Luxury winter gift scene with frosted elegance.",
+        "overlay_text": [
+          "🎁 Frost Gift 🎁",
+          "Perfect Winter Present"
+        ]
+      }
+    }
+  }`,
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Snow Globe Magic",
+      "type": "image",
+      "requirements": {
+        "product": "Ornament front displayed exactly, floating inside snow globe effect.",
+        "dimensions": "Ornament realistic ~10cm inside sphere.",
+        "display": "Glass-like snow globe with falling snow around ornament.",
+        "background": "Blue-white wintry gradient with sparkle effects.",
+        "lighting": "Icy glow around globe, reflections and highlights crisp.",
+        "style": "Fantasy winter premium photo blending magic and realism.",
+        "overlay_text": [
+          "✨ Snow Globe Edition ✨",
+          "Capture the Frosty Spirit"
+        ]
+      }
+    }
+  }`,
+  `{
+    "prompt": {
+      "title": "Christmas Ornament Ad - Winter Forest Moonlight",
+      "type": "image",
+      "requirements": {
+        "product": "Show ornament’s front exactly, hanging from snowy pine branch.",
+        "dimensions": "Scale ~10cm, realistic ratio vs pine.",
+        "display": "Ornament hanging in moonlit snowy forest.",
+        "background": "Tall pine trees with snow, pale blue moonlight, faint stars in sky.",
+        "lighting": "Cold silver-blue moonlight highlights snow, ornament softly illuminated to stand out.",
+        "style": "Cinematic lifestyle with serene, mystical mood.",
+        "overlay_text": [
+          "🌙 Winter Night Charm 🌙",
+          "Moonlit Magic for Your Tree"
+        ]
+      }
+    }
+  }`
+]
+
+const JOYEX3_TITLES = [
+  'Christmas Ornament Ad - Frost Hero White Background',
+  'Christmas Ornament Ad - Snowy Pine Tree Close-up',
+  'Christmas Ornament Ad - Frosted Window Scene',
+  'Christmas Ornament Ad - Snow Gift Box Edition',
+  'Christmas Ornament Ad - Snow Globe Magic',
+  'Christmas Ornament Ad - Winter Forest Moonlight',
+]
+
 // Removed legacy QUICK_PROMPTS list per request
 
 const BACKGROUND_PROMPTS = {
@@ -81,11 +203,13 @@ export function PromptPanel({
   onSubmit, 
   loading = false, 
   className,
-  mode = 'edit'
+  mode = 'edit',
+  onBackgroundSelect,
 }: PromptPanelProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showJoyex1, setShowJoyex1] = useState(false)
   const [showJoyex2, setShowJoyex2] = useState(false)
+  const [showJoyex3, setShowJoyex3] = useState(false)
 
   const form = useForm({
     resolver: zodResolver(promptSchema),
@@ -167,11 +291,12 @@ export function PromptPanel({
                       variant="ghost"
                       size="sm"
                       className="justify-start text-left h-auto py-2 px-3 w-full text-xs"
-                      onClick={() => {
-                        form.setValue('prompt', prompt)
-                        setShowJoyex1(false)
-                      }}
-                    >
+                    onClick={() => {
+                      form.setValue('prompt', prompt)
+                      setShowJoyex1(false)
+                      onBackgroundSelect?.('Joyex1', JOYEX1_TITLES[index] ?? `Prompt ${index + 1}`)
+                    }}
+                  >
                       {JOYEX1_TITLES[index] ?? `Prompt ${index + 1}`}
                     </Button>
                   ))}
@@ -199,12 +324,46 @@ export function PromptPanel({
                       variant="ghost"
                       size="sm"
                       className="justify-start text-left h-auto py-2 px-3 w-full text-xs"
+                    onClick={() => {
+                      form.setValue('prompt', prompt)
+                      setShowJoyex2(false)
+                      onBackgroundSelect?.('Joyex2', JOYEX2_TITLES[index] ?? `Prompt ${index + 1}`)
+                    }}
+                  >
+                      {JOYEX2_TITLES[index] ?? `Prompt ${index + 1}`}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Joyex3 Dropdown */}
+            <div className="space-y-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between"
+                onClick={() => setShowJoyex3(!showJoyex3)}
+              >
+                Joyex3
+                <ChevronDown className={cn("h-4 w-4 transition-transform", showJoyex3 && "rotate-180")} />
+              </Button>
+              {showJoyex3 && (
+                <div className="space-y-2 pl-4 border-l-2 border-muted">
+                  {JOYEX3_PROMPTS.map((prompt, index) => (
+                    <Button
+                      key={index}
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start text-left h-auto py-2 px-3 w-full text-xs"
                       onClick={() => {
                         form.setValue('prompt', prompt)
-                        setShowJoyex2(false)
+                        setShowJoyex3(false)
+                        onBackgroundSelect?.('Joyex3', JOYEX3_TITLES[index] ?? `Prompt ${index + 1}`)
                       }}
                     >
-                      {JOYEX2_TITLES[index] ?? `Prompt ${index + 1}`}
+                      {JOYEX3_TITLES[index] ?? `Prompt ${index + 1}`}
                     </Button>
                   ))}
                 </div>

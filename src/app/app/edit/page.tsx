@@ -25,6 +25,7 @@ export default function MultiImageEditPage() {
   const [images, setImages] = useState<UploadedImage[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const [result, setResult] = useState<{ output_url?: string; error?: string; size?: string } | null>(null)
+  const [backgroundInfo, setBackgroundInfo] = useState<{ group: 'Joyex1' | 'Joyex2' | 'Joyex3'; title: string } | null>(null)
 
   const handleGenerate = async (formData: EditFormData) => {
     if (images.length === 0) {
@@ -95,6 +96,7 @@ export default function MultiImageEditPage() {
               mode="edit"
               onSubmit={handleGenerate}
               loading={isGenerating}
+              onBackgroundSelect={(group, title) => setBackgroundInfo({ group, title })}
             />
           </Card>
         </div>
@@ -114,6 +116,7 @@ export default function MultiImageEditPage() {
                 }] : []
               } : null}
               loading={isGenerating}
+              loadingMessage={backgroundInfo ? `Generating from ${backgroundInfo.group}: ${backgroundInfo.title}` : undefined}
             />
           </Card>
         </div>

@@ -19,6 +19,7 @@ export interface GenerationResult {
 interface ResultViewerProps {
   result: GenerationResult | null
   loading?: boolean
+  loadingMessage?: string
   error?: string | null
   onRetry?: () => void
   onDownload?: (imageUrl: string, filename?: string) => void
@@ -29,6 +30,7 @@ interface ResultViewerProps {
 export function ResultViewer({
   result,
   loading = false,
+  loadingMessage,
   error = null,
   onRetry,
   onDownload,
@@ -94,7 +96,7 @@ export function ResultViewer({
     return (
       <Card className={cn("", className)}>
         <CardContent className="p-8">
-          <JoyerLoading message="Generating your image..." />
+          <JoyerLoading message={loadingMessage ?? "Generating your image..."} />
         </CardContent>
       </Card>
     )
