@@ -40,39 +40,41 @@ export function JoyerLoading({ className, message = "Generating your image..." }
 
   return (
     <div className={cn("flex flex-col items-center justify-center p-8 space-y-6 min-h-[300px] bg-transparent", className)}>
-      {/* Comment Bubble - glass style */}
-      <div className="relative glass rounded-xl px-4 py-3 shadow-md max-w-xs">
-        <p className="text-sm font-medium text-gray-700 text-center">
+      {/* Comment Bubble - higher contrast */}
+      <div className="relative rounded-xl px-4 py-3 shadow-lg max-w-xs bg-black/70 backdrop-blur text-white">
+        <p className="text-sm font-semibold text-center drop-shadow">
           {commentQuotes[currentQuote]}
         </p>
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-white/30 border-r border-b border-white/30"></div>
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-black/70 border-r border-b border-white/20"></div>
       </div>
 
-      {/* Joyer Character with transparent backdrop and motion */}
-      <div className="relative w-40 h-40 flex items-center justify-center">
-        {/* Floating bubbles */}
-        {[...Array(8)].map((_, i) => (
+      {/* Joyer Character with halo and motion */}
+      <div className="relative w-52 h-52 flex items-center justify-center">
+        {/* Snow/Twinkle particles */}
+        {[...Array(12)].map((_, i) => (
           <span
             key={i}
-            className="absolute rounded-full bg-blue-300/30 ring-1 ring-white/40"
+            className="absolute rounded-full bg-white/70"
             style={{
-              width: `${8 + (i % 3) * 4}px`,
-              height: `${8 + (i % 3) * 4}px`,
-              left: `${10 + i * 12}%`,
-              top: `${20 + (i % 5) * 10}%`,
-              animation: `bubbleFloat ${2.5 + (i % 4) * 0.6}s ease-in-out ${i * 0.2}s infinite`,
-              filter: 'blur(0.2px)'
+              width: `${3 + (i % 3) * 2}px`,
+              height: `${3 + (i % 3) * 2}px`,
+              left: `${10 + (i * 7) % 80}%`,
+              top: `${15 + (i * 9) % 70}%`,
+              animation: `twinkle ${1.6 + (i % 5) * 0.4}s ease-in-out ${i * 0.15}s infinite`
             }}
           />
         ))}
 
-        {/* Character bobbing */}
-        <div className="relative w-24 h-24 animate-[float_3s_ease-in-out_infinite]">
+        {/* Halo glow */}
+        <div className="absolute w-40 h-40 rounded-full blur-2xl bg-blue-400/25 animate-pulse-halo" />
+
+        {/* Character bobbing (larger) */}
+        <div className="relative w-32 h-32 animate-[float_3s_ease-in-out_infinite]">
           <Image
             src="/joyer.png"
             alt="Joyer"
             fill
-            className="object-contain drop-shadow-xl"
+            className="object-contain drop-shadow-2xl"
             priority
           />
         </div>
@@ -80,15 +82,15 @@ export function JoyerLoading({ className, message = "Generating your image..." }
 
       {/* Message Display */}
       <div className="text-center space-y-3">
-        <p className="text-base text-gray-700 font-medium">
+        <span className="inline-block px-3 py-2 rounded-lg bg-black/70 text-white text-base font-semibold drop-shadow">
           {message}{dots}
-        </p>
+        </span>
 
         {/* Loading dots */}
-        <div className="flex justify-center space-x-1">
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-          <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+        <div className="flex justify-center space-x-2 mt-1">
+          <div className="w-3 h-3 bg-blue-400 rounded-full animate-twinkle" />
+          <div className="w-3 h-3 bg-cyan-300 rounded-full animate-twinkle" style={{ animationDelay: '0.2s' }} />
+          <div className="w-3 h-3 bg-pink-400 rounded-full animate-twinkle" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
     </div>
