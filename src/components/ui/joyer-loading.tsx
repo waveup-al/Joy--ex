@@ -40,37 +40,51 @@ export function JoyerLoading({ className, message = "Generating your image..." }
 
   return (
     <div className={cn("flex flex-col items-center justify-center p-8 space-y-6 min-h-[300px] bg-transparent", className)}>
-      
-      {/* Comment Bubble */}
-      <div className="relative bg-white/90 border border-gray-200 rounded-xl px-4 py-3 shadow-md max-w-xs">
+      {/* Comment Bubble - glass style */}
+      <div className="relative glass rounded-xl px-4 py-3 shadow-md max-w-xs">
         <p className="text-sm font-medium text-gray-700 text-center">
           {commentQuotes[currentQuote]}
         </p>
-        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white/90 border-r border-b border-gray-200 rotate-45"></div>
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-white/30 border-r border-b border-white/30"></div>
       </div>
 
-      {/* Joyer Character */}
-      <div className="relative w-32 h-32 rounded-full bg-white p-2 border border-gray-200 shadow-lg">
-        <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-          <div className="relative w-24 h-24">
-            <Image
-              src="/joyer.png"
-              alt="Joyer"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+      {/* Joyer Character with transparent backdrop and motion */}
+      <div className="relative w-40 h-40 flex items-center justify-center">
+        {/* Floating bubbles */}
+        {[...Array(8)].map((_, i) => (
+          <span
+            key={i}
+            className="absolute rounded-full bg-blue-300/30 ring-1 ring-white/40"
+            style={{
+              width: `${8 + (i % 3) * 4}px`,
+              height: `${8 + (i % 3) * 4}px`,
+              left: `${10 + i * 12}%`,
+              top: `${20 + (i % 5) * 10}%`,
+              animation: `bubbleFloat ${2.5 + (i % 4) * 0.6}s ease-in-out ${i * 0.2}s infinite`,
+              filter: 'blur(0.2px)'
+            }}
+          />
+        ))}
+
+        {/* Character bobbing */}
+        <div className="relative w-24 h-24 animate-[float_3s_ease-in-out_infinite]">
+          <Image
+            src="/joyer.png"
+            alt="Joyer"
+            fill
+            className="object-contain drop-shadow-xl"
+            priority
+          />
         </div>
       </div>
 
       {/* Message Display */}
       <div className="text-center space-y-3">
-        <p className="text-base text-gray-600 font-medium">
+        <p className="text-base text-gray-700 font-medium">
           {message}{dots}
         </p>
 
-        {/* Simple Loading Dots */}
+        {/* Loading dots */}
         <div className="flex justify-center space-x-1">
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />

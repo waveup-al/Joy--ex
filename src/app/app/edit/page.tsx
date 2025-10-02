@@ -107,16 +107,10 @@ export default function MultiImageEditPage() {
               result={result ? {
                 images: result.output_url ? [{
                   url: result.output_url,
-                  width: result.size === '1280x720' ? 1280 : 
-                          result.size === '2048x2048' ? 2048 : 
-                          result.size === '2560x1440' ? 2560 :
-                          result.size === '3072x3072' ? 3072 :
-                          result.size === '4096x4096' ? 4096 : 1024,
-                  height: result.size === '1280x720' ? 720 : 
-                          result.size === '2048x2048' ? 2048 : 
-                          result.size === '2560x1440' ? 1440 :
-                          result.size === '3072x3072' ? 3072 :
-                          result.size === '4096x4096' ? 4096 : 1024
+                  width: result.size === '2560x1440' ? 2560 :
+                          result.size === '4096x4096' ? 4096 : 2560,
+                  height: result.size === '2560x1440' ? 1440 :
+                          result.size === '4096x4096' ? 4096 : 1440
                 }] : []
               } : null}
               loading={isGenerating}
