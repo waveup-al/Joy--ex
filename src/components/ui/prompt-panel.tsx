@@ -39,6 +39,34 @@ const JOYEX1_PROMPTS = [
   "Create an Amazon advertising image featuring the provided Christmas ornament (preserve 100% original details). Scene: Ornament displayed on a decorated fireplace mantel with stockings, pine garlands, and glowing candles. A warm fire glows in the background. Lighting: Soft golden tones with candlelight reflections, highlighting the ornament's surface and material depth. Style: Photorealistic, high-resolution, elegant Amazon holiday advertisement."
 ]
 
+// Short titles for Joyex1 buttons
+const JOYEX1_TITLES = [
+  'Christmas Tree',
+  'Holiday Dining Table',
+  'Snowy Windowsill',
+  'Gift Box',
+  'Fireplace Mantel',
+]
+
+// Joyex2 block: 6 prompts styled similarly to Joyex1
+const JOYEX2_PROMPTS = [
+  "Create a professional Amazon advertising image featuring the provided Christmas ornament (preserve 100% original details). Scene: Outdoor winter market stall with twinkling lights, pine wreaths, and gentle snowfall. Lighting: Cool winter daylight with warm accent highlights. Style: Photorealistic, high-resolution retail scene.",
+  "Create a professional Amazon advertising image featuring the provided Christmas ornament (no changes to original details). Scene: Cozy reading nook with wooden shelves, open book, soft blanket, and candlelight glow. Lighting: Warm ambient tones with gentle shadows. Style: Photorealistic, premium lifestyle setting.",
+  "Design a professional advertising image with the provided ornament (preserve artwork and text 100%). Scene: Modern living room shelf with minimal decor, matte textures, and soft directional lighting. Lighting: Clean studio-like, subtle highlights. Style: Photorealistic, high-resolution, modern interior.",
+  "Create a studio product shot for Amazon featuring the provided ornament (100% original details preserved). Scene: Minimalist backdrop with neutral colors, soft reflections, and controlled shadows. Lighting: Professional studio softbox illumination. Style: Photorealistic, high-resolution product photography.",
+  "Create a professional advertising image featuring the provided ornament (keep all details unchanged). Scene: Snowy park bench with pine branches, soft winter light, and distant bokeh. Lighting: Cool daylight with warm accent glows. Style: Photorealistic, high-resolution outdoor winter scene.",
+  "Design a professional advertising image featuring the provided ornament (no alterations). Scene: Holiday gift wrapping station with ribbon, craft paper, scissors, and fairy lights. Lighting: Warm indoor tones with focused highlights. Style: Photorealistic, high-resolution creative workspace."
+]
+
+const JOYEX2_TITLES = [
+  'Winter Market',
+  'Cozy Reading Nook',
+  'Modern Shelf',
+  'Studio Product Shot',
+  'Snowy Park Bench',
+  'Gift Wrapping Station',
+]
+
 // Removed legacy QUICK_PROMPTS list per request
 
 const BACKGROUND_PROMPTS = {
@@ -57,6 +85,7 @@ export function PromptPanel({
 }: PromptPanelProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showJoyex1, setShowJoyex1] = useState(false)
+  const [showJoyex2, setShowJoyex2] = useState(false)
 
   const form = useForm({
     resolver: zodResolver(promptSchema),
@@ -143,7 +172,39 @@ export function PromptPanel({
                         setShowJoyex1(false)
                       }}
                     >
-                      Prompt {index + 1}
+                      {JOYEX1_TITLES[index] ?? `Prompt ${index + 1}`}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Joyex2 Dropdown */}
+            <div className="space-y-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between"
+                onClick={() => setShowJoyex2(!showJoyex2)}
+              >
+                Joyex2
+                <ChevronDown className={cn("h-4 w-4 transition-transform", showJoyex2 && "rotate-180")} />
+              </Button>
+              {showJoyex2 && (
+                <div className="space-y-2 pl-4 border-l-2 border-muted">
+                  {JOYEX2_PROMPTS.map((prompt, index) => (
+                    <Button
+                      key={index}
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start text-left h-auto py-2 px-3 w-full text-xs"
+                      onClick={() => {
+                        form.setValue('prompt', prompt)
+                        setShowJoyex2(false)
+                      }}
+                    >
+                      {JOYEX2_TITLES[index] ?? `Prompt ${index + 1}`}
                     </Button>
                   ))}
                 </div>
