@@ -9,7 +9,7 @@ export interface EditJobInput {
   prompt: string
   imageUrls: string[]
   userId: string
-  size?: '2560x1440' | '4096x4096'
+  size?: '2560x1440' | '3840x2160' | '4096x4096'
   seed?: number
   strength?: number
   guidance?: number

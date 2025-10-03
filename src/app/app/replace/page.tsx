@@ -15,7 +15,7 @@ import { UploadedImage } from '@/components/ui/upload-panel'
 
 interface ReplaceFormData {
   prompt: string
-  size: '2560x1440' | '4096x4096'
+  size: '2560x1440' | '3840x2160' | '4096x4096'
   seed?: number
   strength?: number
   guidance?: number
@@ -129,10 +129,12 @@ export default function CompetitorStyleReplacePage() {
                   width: result.size === '1280x720' ? 1280 : 
                          result.size === '2048x2048' ? 2048 : 
                          result.size === '2560x1440' ? 2560 :
+                         result.size === '3840x2160' ? 3840 :
                          result.size === '3072x3072' ? 3072 : 1024,
                   height: result.size === '1280x720' ? 720 : 
                           result.size === '2048x2048' ? 2048 : 
                           result.size === '2560x1440' ? 1440 :
+                          result.size === '3840x2160' ? 2160 :
                           result.size === '3072x3072' ? 3072 : 1024
                 }] : []
               } : null}

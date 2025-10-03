@@ -16,9 +16,9 @@ import { cn } from '@/lib/utils'
 
 const promptSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
-  size: z.enum(['2560x1440', '4096x4096']).default('2560x1440'),
+  size: z.enum(['2560x1440', '3840x2160', '4096x4096']).default('2560x1440'),
   seed: z.number().min(0).max(2147483647).optional(),
-  strength: z.number().min(0).max(1).default(0.75),
+  strength: z.number().min(0).max(1).default(0.45),
   guidance: z.number().min(1).max(20).default(12),
 })
 
@@ -216,8 +216,8 @@ export function PromptPanel({
     defaultValues: {
       prompt: '',
       size: '2560x1440' as const,
-      strength: 0.8,
-      guidance: 7.5,
+      strength: 0.45,
+      guidance: 9.0,
     }
   })
 
@@ -379,13 +379,14 @@ export function PromptPanel({
               <Label htmlFor="size">Output Size</Label>
               <Select
                 value={form.watch('size')}
-                onValueChange={(value) => form.setValue('size', value as '2560x1440' | '4096x4096')}
+                onValueChange={(value) => form.setValue('size', value as '2560x1440' | '3840x2160' | '4096x4096')}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="2560x1440">Ultra HD (2560×1440)</SelectItem>
+                  <SelectItem value="3840x2160">4K Ultra (3840×2160)</SelectItem>
                   <SelectItem value="4096x4096">4K Ultra Square (4096×4096)</SelectItem>
                 </SelectContent>
               </Select>
@@ -452,7 +453,7 @@ export function PromptPanel({
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Higher values = more dramatic changes
+                    Lower values preserve original details; higher values change more
                   </p>
                 </div>
 
