@@ -19,6 +19,7 @@ interface EditFormData {
   seed?: number
   strength?: number
   guidance?: number
+  highFidelity?: boolean
 }
 
 export default function MultiImageEditPage() {
@@ -49,6 +50,7 @@ export default function MultiImageEditPage() {
         seed: formData.seed,
         strength: formData.strength,
         guidance: formData.guidance,
+        highFidelity: formData.highFidelity,
       })
 
       if (jobResult.success && jobResult.data) {

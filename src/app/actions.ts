@@ -14,6 +14,7 @@ export interface EditJobInput {
   strength?: number
   guidance?: number
   addonPrompt?: string // For Mode B
+  highFidelity?: boolean
 }
 
 export interface EditJobResult {
@@ -52,14 +53,23 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
       finalPrompt = generateCompetitorReplacePrompt(input.addonPrompt)
     }
 
+    // Apply High Fidelity optimization: reinforce preservation requirements
+    if (input.highFidelity) {
+      finalPrompt += `\n\nHIGH FIDELITY MODE:\n- Preserve original product exactly (shape, text, colors, proportions).\n- Do NOT alter artwork; only apply the requested contextual changes.\n- Minimize deviation from input; keep micro-textures and material details.`
+    }
+
     // Prepare FAL API payload
+    // Compute tuned parameters
+    const tunedStrength = input.highFidelity ? Math.min(input.strength ?? 0.45, 0.25) : input.strength
+    const tunedGuidance = input.highFidelity ? Math.min(input.guidance ?? 9.0, 7.5) : input.guidance
+
     const falPayload: FalSeedreamPayload = {
       prompt: finalPrompt,
       image_urls: input.imageUrls,
       size: input.size ?? '2560x1440',
       seed: input.seed,
-      strength: input.strength,
-      guidance: input.guidance
+      strength: tunedStrength,
+      guidance: tunedGuidance,
     }
 
     // Call FAL API
@@ -79,8 +89,9 @@ export async function startEditJob(input: EditJobInput): Promise<EditJobResult> 
         parameters: {
           size: input.size ?? '2560x1440',
           seed: input.seed,
-          strength: input.strength,
-          guidance: input.guidance
+          strength: tunedStrength,
+          guidance: tunedGuidance,
+          highFidelity: input.highFidelity ?? false
         }
       }
     }

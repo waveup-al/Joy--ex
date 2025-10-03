@@ -20,6 +20,7 @@ const promptSchema = z.object({
   seed: z.number().min(0).max(2147483647).optional(),
   strength: z.number().min(0).max(1).default(0.45),
   guidance: z.number().min(1).max(20).default(12),
+  highFidelity: z.boolean().default(false),
 })
 
 export type PromptFormData = z.infer<typeof promptSchema>
@@ -218,6 +219,7 @@ export function PromptPanel({
       size: '2560x1440' as const,
       strength: 0.45,
       guidance: 9.0,
+      highFidelity: false,
     }
   })
 
@@ -227,6 +229,7 @@ export function PromptPanel({
 
   const strengthValue = form.watch('strength')
   const guidanceValue = form.watch('guidance')
+  const highFidelity = form.watch('highFidelity')
 
   return (
     <Card className={cn("w-full", className)}>
@@ -392,6 +395,32 @@ export function PromptPanel({
               </Select>
             </div>
 
+            {/* High Fidelity toggle */}
+            <div className="flex items-center justify-between py-2 px-3 rounded border bg-muted/50">
+              <div>
+                <Label className="text-sm">High Fidelity mode</Label>
+                <p className="text-xs text-muted-foreground">Giữ chi tiết gốc tối đa, giảm thay đổi.</p>
+              </div>
+              <Input
+                type="checkbox"
+                checked={!!highFidelity}
+                onChange={(e) => {
+                  const enabled = e.target.checked
+                  form.setValue('highFidelity', enabled)
+                  if (enabled) {
+                    // Lower strength and guidance for better source fidelity
+                    form.setValue('strength', Math.min(form.getValues('strength') ?? 0.45, 0.25))
+                    form.setValue('guidance', Math.min(form.getValues('guidance') ?? 9.0, 7.5))
+                  } else {
+                    // Restore practical defaults
+                    form.setValue('strength', 0.45)
+                    form.setValue('guidance', 9.0)
+                  }
+                }}
+                className="h-4 w-4"
+              />
+            </div>
+
             {/* Advanced Settings Toggle */}
             <Button
               type="button"
@@ -474,7 +503,7 @@ export function PromptPanel({
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Higher values = more adherence to prompt
+                    Higher values = more adherence to prompt; lower helps keep source
                   </p>
                 </div>
               </div>

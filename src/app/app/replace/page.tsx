@@ -19,6 +19,7 @@ interface ReplaceFormData {
   seed?: number
   strength?: number
   guidance?: number
+  highFidelity?: boolean
 }
 
 export default function CompetitorStyleReplacePage() {
@@ -54,6 +55,7 @@ export default function CompetitorStyleReplacePage() {
         seed: formData.seed,
         strength: formData.strength,
         guidance: formData.guidance,
+        highFidelity: formData.highFidelity,
       })
 
       if (jobResult.success && jobResult.data) {
